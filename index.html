@@ -749,7 +749,10 @@
                         📦 Produtos
                     </button>
                     <button class="nav-tab" onclick="switchTab('groups')">
-                        📋 Grupos
+                        📋 Grupos & Tags
+                    </button>
+                    <button class="nav-tab" onclick="switchTab('reports')">
+                        📈 Relatórios
                     </button>
                     <button class="nav-tab" onclick="switchTab('invoices')">
                         📄 Notas Fiscais
@@ -907,34 +910,46 @@
                 </div>
             </div>
 
-            <!-- Groups Tab -->
+            <!-- Groups & Tags Tab -->
             <div id="groups" class="tab-content">
-                <h2 style="margin-bottom: var(--planac-spacing-lg);">Grupos de Produtos</h2>
-                
-                <div class="dashboard-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">🔧</div>
-                        <div class="stat-value">Perfis Metálicos</div>
-                        <div class="stat-label">30 produtos • Margem: 10%</div>
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Grupos & Tags de Produtos</h2>
+
+                <!-- Groups Section -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md); margin-bottom: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">📋 Grupos Principais</h3>
+                    <div id="groupsList"></div>
+                </div>
+
+                <!-- Tags Section -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">🏷️ Tags Disponíveis</h3>
+                    <div id="tagsList"></div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reports" class="tab-content">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Relatórios e Análises</h2>
+
+                <!-- Cost History Section -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md); margin-bottom: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">📊 Histórico de Custos</h3>
+                    <div style="margin-bottom: var(--planac-spacing-md);">
+                        <input type="text" id="costHistorySearch" class="search-input" placeholder="Buscar por código do produto..." style="max-width: 400px;">
                     </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">📐</div>
-                        <div class="stat-value">Chapas de Gesso</div>
-                        <div class="stat-label">15 produtos • Margem: 10%</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">🏠</div>
-                        <div class="stat-value">Forros PVC</div>
-                        <div class="stat-label">120 produtos • Margem: 15% (ST)</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">🎨</div>
-                        <div class="stat-value">Acabamentos</div>
-                        <div class="stat-label">150 produtos • Margem: 15%</div>
-                    </div>
+                    <div id="costHistoryList"></div>
+                </div>
+
+                <!-- Report by Tags -->
+                <div style="background: white; border-radius: var(--planac-spacing-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md); margin-bottom: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">🏷️ Relatório por Tags</h3>
+                    <div id="tagsReport"></div>
+                </div>
+
+                <!-- Report by Groups -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">📋 Relatório por Grupos</h3>
+                    <div id="groupsReport"></div>
                 </div>
             </div>
 
@@ -1099,16 +1114,20 @@
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
-            
+
             // Update content
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
             document.getElementById(tabName).classList.add('active');
-            
+
             // Load tab data if needed
             if (tabName === 'products') {
                 loadProducts();
+            } else if (tabName === 'groups') {
+                loadGroupsAndTags();
+            } else if (tabName === 'reports') {
+                loadReports();
             }
         }
 
@@ -1559,6 +1578,191 @@ ST: R$ ${pricing.calculation.st}`;
                 alert('Erro ao calcular: ' + error.message);
             }
         }
+
+        // Load Groups and Tags
+        async function loadGroupsAndTags() {
+            try {
+                // Load groups
+                const groups = await fetch('https://planac-sistema.planacacabamentos.workers.dev/api/groups').then(r => r.json());
+                const groupsContainer = document.getElementById('groupsList');
+
+                let groupsHTML = '<div class="dashboard-grid">';
+                for (const group of groups) {
+                    const avgCost = parseFloat(group.avg_cost || 0);
+                    groupsHTML += `
+                        <div class="stat-card">
+                            <div class="stat-icon">📦</div>
+                            <div class="stat-value">${group.name}</div>
+                            <div class="stat-label">${group.product_count} produtos • Custo médio: R$ ${avgCost.toFixed(2)}</div>
+                            <div style="margin-top: 8px; font-size: 0.9rem; color: var(--planac-gray-600);">
+                                Margem: ${group.min_margin}% - ${group.max_margin}%
+                            </div>
+                        </div>
+                    `;
+                }
+                groupsHTML += '</div>';
+                groupsContainer.innerHTML = groupsHTML;
+
+                // Load tags
+                const tags = await fetch('https://planac-sistema.planacacabamentos.workers.dev/api/tags').then(r => r.json());
+                const tagsContainer = document.getElementById('tagsList');
+
+                let tagsHTML = '<div style="display: flex; flex-wrap: wrap; gap: var(--planac-spacing-sm);">';
+                for (const tag of tags) {
+                    tagsHTML += `
+                        <div style="padding: var(--planac-spacing-sm) var(--planac-spacing-md); background: ${tag.color}; color: white; border-radius: var(--planac-radius-full); font-weight: 600; font-size: 0.9rem; box-shadow: var(--planac-shadow-sm);">
+                            ${tag.name} (${tag.product_count})
+                        </div>
+                    `;
+                }
+                tagsHTML += '</div>';
+                tagsContainer.innerHTML = tagsHTML;
+
+            } catch (error) {
+                console.error('Erro ao carregar grupos e tags:', error);
+            }
+        }
+
+        // Load Reports
+        async function loadReports() {
+            try {
+                // Load cost history (all products)
+                loadCostHistory();
+
+                // Load tags report
+                const tagsReport = await fetch('https://planac-sistema.planacacabamentos.workers.dev/api/reports/tags').then(r => r.json());
+                const tagsContainer = document.getElementById('tagsReport');
+
+                let tagsHTML = '';
+                for (const tag of tagsReport) {
+                    const avgCost = parseFloat(tag.avg_cost || 0);
+                    tagsHTML += `
+                        <div class="product-profit-card" style="margin-bottom: var(--planac-spacing-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="display: inline-block; padding: 4px 12px; background: ${tag.color}; color: white; border-radius: var(--planac-radius-full); font-weight: 600; margin-bottom: 8px;">
+                                        ${tag.tag_name}
+                                    </div>
+                                    <div style="color: var(--planac-gray-600); font-size: 0.9rem;">
+                                        ${tag.product_count} produtos • Custo médio: R$ ${avgCost.toFixed(2)}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                tagsContainer.innerHTML = tagsHTML || '<p style="color: var(--planac-gray-500);">Nenhuma tag encontrada</p>';
+
+                // Load groups report (same as dashboard)
+                const groupsReport = await fetch('https://planac-sistema.planacacabamentos.workers.dev/api/reports/groups').then(r => r.json());
+                const groupsContainer = document.getElementById('groupsReport');
+
+                let groupsHTML = '';
+                for (const group of groupsReport) {
+                    const avgCost = parseFloat(group.avg_cost || 0);
+                    const minMargin = parseFloat(group.min_margin || 0);
+                    const maxMargin = parseFloat(group.max_margin || 0);
+                    const avgMargin = (minMargin + maxMargin) / 2;
+
+                    let profitClass = 'low';
+                    if (avgMargin > 35) profitClass = 'high';
+                    else if (avgMargin >= 25) profitClass = 'medium';
+
+                    groupsHTML += `
+                        <div class="product-profit-card ${profitClass}-profit" style="margin-bottom: var(--planac-spacing-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--planac-spacing-sm);">
+                                <div>
+                                    <strong style="font-size: 1.1rem;">${group.group_name}</strong>
+                                    <div style="color: var(--planac-gray-600); font-size: 0.9rem; margin-top: 4px;">
+                                        ${group.product_count} produtos • Custo médio: R$ ${avgCost.toFixed(2)}
+                                    </div>
+                                </div>
+                                <div class="profit-indicator">
+                                    <span class="profit-dot ${profitClass}"></span>
+                                    <span>${avgMargin.toFixed(1)}%</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${profitClass}" style="width: ${Math.min(avgMargin, 100)}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                groupsContainer.innerHTML = groupsHTML;
+
+            } catch (error) {
+                console.error('Erro ao carregar relatórios:', error);
+            }
+        }
+
+        // Load Cost History
+        async function loadCostHistory(searchCode = '') {
+            try {
+                let url = 'https://planac-sistema.planacacabamentos.workers.dev/api/cost-history';
+                if (searchCode) {
+                    url += `?code=${searchCode}`;
+                }
+
+                const history = await fetch(url).then(r => r.json());
+                const container = document.getElementById('costHistoryList');
+
+                if (history.length === 0) {
+                    container.innerHTML = '<div class="alert alert-info"><span>ℹ️</span><span>Nenhum histórico de custos encontrado. O histórico será registrado automaticamente quando notas fiscais forem processadas.</span></div>';
+                    return;
+                }
+
+                let html = '';
+                for (const entry of history) {
+                    const oldCost = parseFloat(entry.old_cost || 0);
+                    const newCost = parseFloat(entry.new_cost || 0);
+                    const variation = oldCost > 0 ? ((newCost - oldCost) / oldCost * 100) : 0;
+                    const isIncrease = variation > 0;
+
+                    const date = new Date(entry.created_at).toLocaleString('pt-BR');
+
+                    html += `
+                        <div class="product-profit-card" style="margin-bottom: var(--planac-spacing-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div style="flex: 1;">
+                                    <strong style="font-size: 1rem;">${entry.product_name}</strong>
+                                    <div style="color: var(--planac-gray-600); font-size: 0.85rem; margin-top: 4px;">
+                                        Código: ${entry.product_code} | ${date}
+                                    </div>
+                                    <div style="margin-top: var(--planac-spacing-sm); display: flex; gap: var(--planac-spacing-md); font-size: 0.9rem;">
+                                        <span><strong>De:</strong> R$ ${oldCost.toFixed(2)}</span>
+                                        <span><strong>Para:</strong> R$ ${newCost.toFixed(2)}</span>
+                                        <span style="color: ${isIncrease ? 'var(--planac-danger)' : 'var(--planac-success)'};">
+                                            <strong>${isIncrease ? '▲' : '▼'} ${Math.abs(variation).toFixed(1)}%</strong>
+                                        </span>
+                                    </div>
+                                    ${entry.invoice_number ? `<div style="margin-top: 4px; font-size: 0.85rem; color: var(--planac-gray-600);">NF: ${entry.invoice_number} | Fornecedor: ${entry.supplier || 'N/A'}</div>` : ''}
+                                    ${entry.change_reason ? `<div style="margin-top: 4px; font-size: 0.85rem; color: var(--planac-gray-600);">Motivo: ${entry.change_reason}</div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Erro ao carregar histórico:', error);
+                document.getElementById('costHistoryList').innerHTML = '<div class="alert alert-danger"><span>❌</span><span>Erro ao carregar histórico de custos</span></div>';
+            }
+        }
+
+        // Cost history search
+        document.addEventListener('DOMContentLoaded', () => {
+            const costSearchInput = document.getElementById('costHistorySearch');
+            if (costSearchInput) {
+                let searchTimeout;
+                costSearchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        loadCostHistory(costSearchInput.value.trim());
+                    }, 300);
+                });
+            }
+        });
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {

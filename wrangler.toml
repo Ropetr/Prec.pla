@@ -33,7 +33,7 @@ crons = ["*/10 * * * *"]
 
 # Rota para a aplicação
 [routes]
-route = "scanner.planac.com.br/*"
+routes = ["scanner.planac.com.br/*"]
 
 # Configurações de build
 [build]

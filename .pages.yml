@@ -1,0 +1,16 @@
+# Cloudflare Pages Configuration
+# https://developers.cloudflare.com/pages/
+
+name: planac-sistema
+production_branch: main
+build:
+  command: echo "Static site - no build needed"
+  output_directory: /
+pages_build_output_dir: /
+
+# Files to deploy
+include:
+  - index.html
+  - scanner.html
+  - tema-planac.css
+  - worker.js

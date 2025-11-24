@@ -1,0 +1,107 @@
+INSTRUÇÕES PARA SUBIR NO GITHUB - PLANAC SISTEMA
+=================================================
+
+📦 ARQUIVOS PRONTOS PARA: https://github.com/Ropetr/Prec.pla
+
+=================================================
+OPÇÃO 1 - MAIS FÁCIL (COPIAR E COLAR)
+=================================================
+
+1. BAIXE O ZIP
+   - Baixe: planac-sistema-github.zip
+   - Extraia na sua pasta preferida
+
+2. ABRA O TERMINAL/CMD NA PASTA
+   - Windows: Clique direito > "Abrir no Terminal"
+   - Ou: Win+R > cmd > cd caminho-da-pasta
+
+3. EXECUTE O SCRIPT AUTOMÁTICO:
+   
+   WINDOWS:
+   push-to-github.bat
+   
+   LINUX/MAC:
+   ./push-to-github.sh
+
+4. INSIRA SUAS CREDENCIAIS DO GITHUB
+   - Username: Ropetr
+   - Password: (seu token ou senha)
+
+5. PRONTO! Arquivos no GitHub!
+
+=================================================
+OPÇÃO 2 - COMANDO MANUAL
+=================================================
+
+Se preferir fazer manualmente, execute estes comandos:
+
+git init
+git add .
+git commit -m "Sistema PLANAC v2.0"
+git branch -M main
+git remote add origin https://github.com/Ropetr/Prec.pla.git
+git push -u origin main --force
+
+=================================================
+OPÇÃO 3 - UPLOAD PELO NAVEGADOR
+=================================================
+
+1. Acesse: https://github.com/Ropetr/Prec.pla
+
+2. Clique em "uploading an existing file"
+
+3. Arraste TODOS os arquivos:
+   - index.html
+   - scanner.html
+   - worker.js
+   - tema-planac.css
+   - wrangler.toml
+   - package.json
+   - README.md
+   - .gitignore
+
+4. Commit changes
+
+=================================================
+APÓS SUBIR NO GITHUB - DEPLOY CLOUDFLARE
+=================================================
+
+1. Acesse: https://dash.cloudflare.com
+
+2. Workers & Pages > Create > Pages
+
+3. Connect to Git
+
+4. Autorize o GitHub
+
+5. Selecione: Prec.pla
+
+6. Configurações:
+   - Build command: (deixe vazio)
+   - Build output: /
+
+7. Save and Deploy
+
+8. URL gerada: https://prec-pla.pages.dev
+
+=================================================
+PROBLEMAS COMUNS
+=================================================
+
+"Permission denied"
+→ Use --force no final do comando push
+
+"Repository not found"
+→ Verifique se está logado no GitHub
+
+"Failed to push"
+→ Crie um token em: github.com/settings/tokens
+
+=================================================
+SUPORTE
+=================================================
+
+Email: rodrigo@planacdivisorias.com.br
+Sistema funcionando: Tudo incluído e testado!
+
+BOA SORTE! 🚀

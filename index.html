@@ -895,20 +895,14 @@
         </main>
     </div>
 
+    <!-- API Client -->
+    <script src="api.js"></script>
+
     <script>
         // Global State
         let currentUser = null;
         let currentMode = null;
-        
-        // Sample product data (572 produtos)
-        const products = [
-            { code: '000095', name: 'GUIA 48 BARBIERI', ncm: '72166110', cost: 11.10, hasST: false },
-            { code: '000298', name: 'MONTANTE 48 BARBIERI', ncm: '72166110', cost: 12.66, hasST: false },
-            { code: '000300', name: 'MONTANTE 70 BARBIERI', ncm: '72166190', cost: 14.89, hasST: false },
-            { code: '001234', name: 'FORRO PVC BELKA GEMINADO', ncm: '39162000', cost: 26.51, hasST: true },
-            { code: '001235', name: 'PARAFUSO 4.2X13 PA', ncm: '73181400', cost: 0.12, hasST: true },
-            // Add more products here...
-        ];
+        let products = []; // Will be loaded from API
 
         // Credenciais válidas
         const validCredentials = {
@@ -917,22 +911,23 @@
         };
 
         // Login Handler
-        function handleLogin(event) {
+        async function handleLogin(event) {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
-            // Validação de credenciais
-            if (email === validCredentials.email && password === validCredentials.password) {
-                currentUser = email.split('@')[0];
+            try {
+                const result = await api.login(email, password);
+                currentUser = result.user.name;
                 document.getElementById('userName').textContent = currentUser;
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('appScreen').classList.add('active');
 
-                // Initialize dashboard
-                loadDashboard();
-            } else {
-                alert('❌ Email ou senha incorretos!\n\nCredenciais válidas:\nEmail: rodrigo@planacdivisorias.com.br\nSenha: Rodelo122509.');
+                // Load initial data
+                await loadDashboard();
+                await loadAllProducts();
+            } catch (error) {
+                alert('❌ Erro no login: ' + error.message);
             }
         }
 
@@ -975,6 +970,10 @@
                 currentMode = 'group';
             }
             updatePricingInterface();
+            // Auto-display products when mode is selected
+            if (products.length > 0) {
+                displayProductsList();
+            }
         }
 
         // Update Pricing Interface
@@ -1014,36 +1013,59 @@
             }
         }
 
-        // Search Product
-        function searchProduct() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const resultsDiv = document.getElementById('searchResults');
-            
+        // Load all products from API
+        async function loadAllProducts() {
+            try {
+                products = await api.getProducts();
+                console.log(`Carregados ${products.length} produtos`);
+                // Auto-display products in pricing tab
+                displayProductsList();
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+            }
+        }
+
+        // Search Product in real-time
+        async function searchProduct() {
+            const query = document.getElementById('searchInput').value.trim();
+
             if (!currentMode) {
                 alert('Por favor, selecione um modo de precificação primeiro.');
                 return;
             }
-            
-            if (!query) {
-                alert('Digite algo para buscar.');
+
+            try {
+                // Buscar da API
+                const found = await api.getProducts(query);
+                displayProductsList(found);
+            } catch (error) {
+                console.error('Erro na busca:', error);
+                alert('Erro ao buscar produtos: ' + error.message);
+            }
+        }
+
+        // Display products list with pricing
+        async function displayProductsList(productsList = null) {
+            const resultsDiv = document.getElementById('searchResults');
+            const productsToShow = productsList || products;
+
+            if (!productsToShow || productsToShow.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-info">
+                        <span>ℹ️</span>
+                        <span>Nenhum produto encontrado. ${!currentMode ? 'Selecione um modo de precificação acima.' : ''}</span>
+                    </div>
+                `;
                 return;
             }
-            
-            // Search in products
-            const found = products.filter(p => 
-                p.code.includes(query) || 
-                p.name.toLowerCase().includes(query) || 
-                p.ncm.includes(query)
-            );
-            
-            if (found.length > 0) {
-                let html = '<div class="results-container">';
-                
-                found.forEach(product => {
-                    const margin = 0.15; // 15% margin
-                    const coefficient = 1 / (1 - margin);
-                    const sellPrice = (product.cost * coefficient).toFixed(2);
-                    
+
+            let html = '<div class="results-container"><h3 style="margin-bottom: 20px;">' + productsToShow.length + ' produtos encontrados</h3>';
+
+            for (const product of productsToShow) {
+                // Calculate pricing with real API
+                try {
+                    const pricing = await api.calculatePricing(product.code, '5102', 'SP', 'consumidor', 30);
+
                     html += `
                         <div class="result-card">
                             <div class="result-header">
@@ -1060,33 +1082,44 @@
                                     <strong>NCM:</strong> ${product.ncm}
                                 </div>
                                 <div>
-                                    <strong>Custo:</strong> R$ ${product.cost.toFixed(2)}
+                                    <strong>Custo:</strong> R$ ${pricing.calculation.cost}
                                 </div>
                                 <div>
-                                    <strong>Preço Venda:</strong> R$ ${sellPrice}
+                                    <strong>ICMS:</strong> R$ ${pricing.calculation.icms} (${pricing.taxes.icmsRate}%)
                                 </div>
                                 <div>
-                                    <strong>Margem:</strong> ${(margin * 100).toFixed(1)}%
+                                    <strong>ST:</strong> R$ ${pricing.calculation.st}
                                 </div>
                                 <div>
-                                    <strong>Lucro:</strong> R$ ${(sellPrice - product.cost).toFixed(2)}
+                                    <strong>Preço Final:</strong> <span style="color: var(--planac-primary); font-weight: 700;">R$ ${pricing.calculation.finalPrice}</span>
                                 </div>
                             </div>
                         </div>
                     `;
-                });
-                
-                html += '</div>';
-                resultsDiv.innerHTML = html;
-            } else {
-                resultsDiv.innerHTML = `
-                    <div class="alert alert-warning">
-                        <span>⚠️</span>
-                        <span>Nenhum produto encontrado para "${query}".</span>
-                    </div>
-                `;
+                } catch (error) {
+                    console.error(`Erro ao calcular preço de ${product.code}:`, error);
+                }
             }
+
+            html += '</div>';
+            resultsDiv.innerHTML = html;
         }
+
+        // Auto-search as user types
+        let searchTimeout;
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        if (currentMode && products.length > 0) {
+                            searchProduct();
+                        }
+                    }, 300); // 300ms debounce
+                });
+            }
+        });
 
         // Load Dashboard
         function loadDashboard() {
@@ -1095,33 +1128,52 @@
         }
 
         // Load Products
-        function loadProducts() {
+        async function loadProducts() {
             const tbody = document.getElementById('productsList');
+
+            if (products.length === 0) {
+                await loadAllProducts();
+            }
+
             let html = '';
-            
-            // Show first 10 products
-            products.slice(0, 10).forEach(product => {
+
+            // Show all products
+            products.forEach(product => {
                 html += `
                     <tr>
                         <td>${product.code}</td>
                         <td>${product.name}</td>
                         <td>${product.ncm}</td>
-                        <td>R$ ${product.cost.toFixed(2)}</td>
+                        <td>R$ ${parseFloat(product.cost || 0).toFixed(2)}</td>
                         <td>
                             <span class="st-badge ${product.hasST ? 'with-st' : 'no-st'}">
                                 ${product.hasST ? 'SIM' : 'NÃO'}
                             </span>
                         </td>
                         <td>
-                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.9rem;">
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.9rem;" onclick="calculateProduct('${product.code}')">
                                 Calcular
                             </button>
                         </td>
                     </tr>
                 `;
             });
-            
-            tbody.innerHTML = html;
+
+            tbody.innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Nenhum produto encontrado</td></tr>';
+        }
+
+        // Calculate individual product price
+        async function calculateProduct(code) {
+            try {
+                const pricing = await api.calculatePricing(code, '5102', 'SP', 'consumidor', 30);
+                alert(`Produto: ${pricing.product.name}
+Custo: R$ ${pricing.calculation.cost}
+ICMS: R$ ${pricing.calculation.icms}
+ST: R$ ${pricing.calculation.st}
+Preço Final: R$ ${pricing.calculation.finalPrice}`);
+            } catch (error) {
+                alert('Erro ao calcular: ' + error.message);
+            }
         }
 
         // Initialize

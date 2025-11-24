@@ -40,7 +40,19 @@ export default {
         
         case '/api/config':
           return await this.handleConfig(request, env, headers);
-        
+
+        case '/api/products':
+          return await this.handleProducts(request, env, headers);
+
+        case '/api/product':
+          return await this.handleProduct(request, env, headers);
+
+        case '/api/pricing/calculate':
+          return await this.handlePricingCalculate(request, env, headers);
+
+        case '/api/login':
+          return await this.handleLogin(request, env, headers);
+
         default:
           return new Response('Not Found', { status: 404, headers });
       }
@@ -93,7 +105,7 @@ export default {
       secure: true,
       auth: {
         user: address,
-        pass: 'Rodelo122509.'
+        pass: env.EMAIL_PASSWORD
       }
     };
 
@@ -384,12 +396,12 @@ export default {
     }
     
     query += ' ORDER BY issue_date DESC LIMIT 100';
-    
-    const stmt = env.DB.prepare(query);
+
+    let stmt = env.DB.prepare(query);
     if (params.length > 0) {
-      stmt.bind(...params);
+      stmt = stmt.bind(...params);
     }
-    
+
     const result = await stmt.all();
     
     return new Response(JSON.stringify(result), { headers });
@@ -467,5 +479,183 @@ export default {
     }
     
     return new Response('Method not allowed', { status: 405, headers });
+  },
+
+  // Products API
+  async handleProducts(request, env, headers) {
+    const url = new URL(request.url);
+    const search = url.searchParams.get('search');
+    const group = url.searchParams.get('group');
+
+    let query = 'SELECT * FROM products WHERE active = 1';
+    const params = [];
+
+    if (search) {
+      query += ' AND (code LIKE ? OR name LIKE ?)';
+      const searchTerm = `%${search}%`;
+      params.push(searchTerm, searchTerm);
+    }
+
+    if (group) {
+      query += ' AND group_id = ?';
+      params.push(parseInt(group));
+    }
+
+    query += ' ORDER BY name LIMIT 100';
+
+    let stmt = env.DB.prepare(query);
+    if (params.length > 0) {
+      stmt = stmt.bind(...params);
+    }
+
+    const result = await stmt.all();
+
+    return new Response(JSON.stringify(result.results || []), { headers });
+  },
+
+  async handleProduct(request, env, headers) {
+    const url = new URL(request.url);
+    const code = url.searchParams.get('code');
+
+    if (!code) {
+      return new Response(JSON.stringify({ error: 'Product code required' }), {
+        status: 400,
+        headers
+      });
+    }
+
+    const product = await env.DB.prepare(
+      'SELECT * FROM products WHERE code = ?'
+    ).bind(code).first();
+
+    if (!product) {
+      return new Response(JSON.stringify({ error: 'Product not found' }), {
+        status: 404,
+        headers
+      });
+    }
+
+    return new Response(JSON.stringify(product), { headers });
+  },
+
+  // Pricing calculator
+  async handlePricingCalculate(request, env, headers) {
+    const data = await request.json();
+    const { productCode, operation, uf, clientType, margin } = data;
+
+    // Get product
+    const product = await env.DB.prepare(
+      'SELECT * FROM products WHERE code = ?'
+    ).bind(productCode).first();
+
+    if (!product) {
+      return new Response(JSON.stringify({ error: 'Product not found' }), {
+        status: 404,
+        headers
+      });
+    }
+
+    // Get tax config
+    const taxConfig = await env.DB.prepare(
+      'SELECT * FROM tax_configs WHERE cfop = ? AND uf_origin = ? AND uf_dest = ?'
+    ).bind(operation, 'SP', uf || 'SP').first();
+
+    const cost = parseFloat(product.cost || 0);
+    const hasST = product.hasST === 1;
+
+    // Calculate taxes
+    let icmsRate = 0;
+    let mvaRate = 0;
+    let difalRate = 0;
+
+    if (taxConfig) {
+      icmsRate = parseFloat(taxConfig.icms_rate || 0);
+      mvaRate = parseFloat(taxConfig.mva || 0);
+      difalRate = parseFloat(taxConfig.difal_rate || 0);
+    }
+
+    // Base calculation
+    let price = cost;
+
+    // Add margin
+    const marginPercent = parseFloat(margin || 30);
+    price = price * (1 + marginPercent / 100);
+
+    // Calculate ICMS
+    const icmsValue = hasST ? 0 : price * (icmsRate / 100);
+
+    // Calculate ST
+    let stValue = 0;
+    if (hasST) {
+      const baseCalcST = price * (1 + mvaRate / 100);
+      stValue = baseCalcST * (icmsRate / 100);
+    }
+
+    // Calculate DIFAL (for interstate)
+    let difalValue = 0;
+    if (uf && uf !== 'SP') {
+      difalValue = price * (difalRate / 100);
+    }
+
+    // PIS/COFINS
+    const pisValue = price * 0.0165;
+    const cofinsValue = price * 0.076;
+
+    // Final price
+    const finalPrice = price + icmsValue + stValue + difalValue;
+
+    return new Response(JSON.stringify({
+      product: {
+        code: product.code,
+        name: product.name,
+        cost: cost
+      },
+      calculation: {
+        cost: cost.toFixed(2),
+        margin: marginPercent.toFixed(2),
+        basePrice: price.toFixed(2),
+        icms: icmsValue.toFixed(2),
+        st: stValue.toFixed(2),
+        difal: difalValue.toFixed(2),
+        pis: pisValue.toFixed(2),
+        cofins: cofinsValue.toFixed(2),
+        finalPrice: finalPrice.toFixed(2)
+      },
+      taxes: {
+        icmsRate: icmsRate.toFixed(2),
+        mvaRate: mvaRate.toFixed(2),
+        difalRate: difalRate.toFixed(2),
+        hasST: hasST
+      }
+    }), { headers });
+  },
+
+  // Login API
+  async handleLogin(request, env, headers) {
+    const data = await request.json();
+    const { email, password } = data;
+
+    // Hardcoded credentials for MVP
+    const validUsers = [
+      { email: 'rodrigo@planacdivisorias.com.br', password: 'Rodelo122509.', name: 'Rodrigo' },
+      { email: 'marco@planacdivisorias.com.br', password: 'Rodelo122509.', name: 'Marco' }
+    ];
+
+    const user = validUsers.find(u => u.email === email && u.password === password);
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
+        status: 401,
+        headers
+      });
+    }
+
+    return new Response(JSON.stringify({
+      success: true,
+      user: {
+        email: user.email,
+        name: user.name
+      }
+    }), { headers });
   }
 };

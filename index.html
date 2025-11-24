@@ -593,8 +593,10 @@
                 </button>
             </form>
             <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--planac-gray-200);">
-                <p style="color: var(--planac-gray-500); font-size: 0.9rem; text-align: center;">
-                    Demo: use qualquer email e senha
+                <p style="color: var(--planac-gray-500); font-size: 0.85rem; text-align: center;">
+                    <strong>Credenciais de Acesso:</strong><br>
+                    Email: rodrigo@planacdivisorias.com.br<br>
+                    Senha: Rodelo122509.
                 </p>
             </div>
         </div>
@@ -908,21 +910,29 @@
             // Add more products here...
         ];
 
+        // Credenciais válidas
+        const validCredentials = {
+            email: 'rodrigo@planacdivisorias.com.br',
+            password: 'Rodelo122509.'
+        };
+
         // Login Handler
         function handleLogin(event) {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
-            
-            // Simple validation (in production, this would be server-side)
-            if (email && password) {
+
+            // Validação de credenciais
+            if (email === validCredentials.email && password === validCredentials.password) {
                 currentUser = email.split('@')[0];
                 document.getElementById('userName').textContent = currentUser;
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('appScreen').classList.add('active');
-                
+
                 // Initialize dashboard
                 loadDashboard();
+            } else {
+                alert('❌ Email ou senha incorretos!\n\nCredenciais válidas:\nEmail: rodrigo@planacdivisorias.com.br\nSenha: Rodelo122509.');
             }
         }
 

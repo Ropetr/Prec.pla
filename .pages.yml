@@ -1,7 +1,7 @@
 # Cloudflare Pages Configuration
 # https://developers.cloudflare.com/pages/
 
-name: planac-sistema
+name: planac-sistema-precificacao
 production_branch: main
 build:
   command: echo "Static site - no build needed"

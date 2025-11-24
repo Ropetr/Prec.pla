@@ -1,7 +1,7 @@
 name = "precplanac"
 main = "worker.js"
 compatibility_date = "2024-01-01"
-node_compat = true
+compatibility_flags = ["nodejs_compat"]
 
 # Banco de dados D1
 [[d1_databases]]

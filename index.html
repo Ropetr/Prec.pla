@@ -997,31 +997,52 @@
 
             <!-- Scanner Tab -->
             <div id="scanner" class="tab-content">
-                <h2 style="margin-bottom: var(--planac-spacing-lg);">Scanner de Emails</h2>
-                
-                <div class="dashboard-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">📧</div>
-                        <div class="stat-value">4</div>
-                        <div class="stat-label">Emails Monitorados</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">📎</div>
-                        <div class="stat-value">12</div>
-                        <div class="stat-label">XMLs Hoje</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-value">98%</div>
-                        <div class="stat-label">Taxa de Sucesso</div>
-                    </div>
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Processamento de Notas Fiscais</h2>
+
+                <div class="alert alert-warning" style="margin-bottom: var(--planac-spacing-xl);">
+                    <span>⚠️</span>
+                    <span><strong>Limitação Técnica:</strong> Cloudflare Workers não suportam conexões IMAP/TCP nativas. Use o upload manual de XML abaixo ou configure Email Routing do Cloudflare para processamento automático.</span>
                 </div>
 
-                <div class="alert alert-success">
-                    <span>✅</span>
-                    <span>Scanner ativo - Última verificação: há 5 minutos</span>
+                <!-- Upload XML Section -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md); margin-bottom: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">📤 Upload de XML de Nota Fiscal</h3>
+
+                    <div style="border: 2px dashed var(--planac-gray-300); border-radius: var(--planac-radius-lg); padding: var(--planac-spacing-xl); text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: var(--planac-spacing-md);">📄</div>
+                        <input type="file" id="xmlFileInput" accept=".xml" style="display: none;" onchange="handleXMLUpload(event)">
+                        <button class="btn btn-primary" style="margin-bottom: var(--planac-spacing-md);" onclick="document.getElementById('xmlFileInput').click()">
+                            Selecionar Arquivo XML
+                        </button>
+                        <p style="color: var(--planac-gray-600); font-size: 0.9rem;">
+                            Arraste e solte ou clique para selecionar XML de nota fiscal
+                        </p>
+                    </div>
+
+                    <div id="uploadStatus" style="margin-top: var(--planac-spacing-lg);"></div>
+                </div>
+
+                <!-- Recent Uploads -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">📋 Notas Processadas Recentemente</h3>
+                    <div id="recentInvoices"></div>
+                </div>
+
+                <!-- Email Routing Instructions -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md); margin-top: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">📧 Configurar Processamento Automático (Email Routing)</h3>
+                    <div style="color: var(--planac-gray-700); line-height: 1.6;">
+                        <p style="margin-bottom: var(--planac-spacing-sm);"><strong>Para processar XMLs automaticamente:</strong></p>
+                        <ol style="margin-left: 20px;">
+                            <li>Acesse o Dashboard do Cloudflare</li>
+                            <li>Vá em "Email Routing" no menu</li>
+                            <li>Configure para encaminhar emails para o Worker</li>
+                            <li>Adicione handler de email no worker.js</li>
+                        </ol>
+                        <p style="margin-top: var(--planac-spacing-md); padding: var(--planac-spacing-sm); background: var(--planac-gray-100); border-radius: var(--planac-radius-md); font-size: 0.9rem;">
+                            💡 <strong>Dica:</strong> Esta é a solução recomendada pela Cloudflare para processamento de emails sem necessidade de servidores externos.
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -1763,6 +1784,104 @@ ST: R$ ${pricing.calculation.st}`;
                 });
             }
         });
+
+        // Handle XML Upload
+        async function handleXMLUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const statusDiv = document.getElementById('uploadStatus');
+            statusDiv.innerHTML = '<div class="alert alert-info"><span>⏳</span><span>Processando XML...</span></div>';
+
+            try {
+                const formData = new FormData();
+                formData.append('xml', file);
+
+                const response = await fetch('https://planac-sistema.planacacabamentos.workers.dev/api/invoice/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <span>✅</span>
+                            <span><strong>Sucesso!</strong> Nota fiscal processada: NF ${result.invoice.nNF} - ${result.invoice.produtos.length} produtos atualizados</span>
+                        </div>
+                    `;
+
+                    // Reload recent invoices
+                    loadRecentInvoices();
+
+                    // Clear file input
+                    event.target.value = '';
+                } else {
+                    throw new Error(result.error || 'Erro ao processar XML');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="alert alert-danger">
+                        <span>❌</span>
+                        <span><strong>Erro:</strong> ${error.message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Load Recent Invoices
+        async function loadRecentInvoices() {
+            try {
+                const response = await fetch('https://planac-sistema.planacacabamentos.workers.dev/api/invoices?type=entrada');
+                const result = await response.json();
+                const invoices = result.results || [];
+
+                const container = document.getElementById('recentInvoices');
+
+                if (invoices.length === 0) {
+                    container.innerHTML = '<div class="alert alert-info"><span>ℹ️</span><span>Nenhuma nota processada ainda. Faça upload de um XML acima.</span></div>';
+                    return;
+                }
+
+                let html = '';
+                for (const invoice of invoices.slice(0, 10)) {
+                    const date = new Date(invoice.issue_date).toLocaleDateString('pt-BR');
+                    html += `
+                        <div class="product-profit-card" style="margin-bottom: var(--planac-spacing-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div style="flex: 1;">
+                                    <strong style="font-size: 1rem;">NF ${invoice.invoice_number}</strong>
+                                    <div style="color: var(--planac-gray-600); font-size: 0.85rem; margin-top: 4px;">
+                                        ${invoice.entity_name} | ${date}
+                                    </div>
+                                    <div style="margin-top: var(--planac-spacing-sm); display: flex; gap: var(--planac-spacing-md); font-size: 0.9rem;">
+                                        <span><strong>Total:</strong> R$ ${parseFloat(invoice.total_invoice || 0).toFixed(2)}</span>
+                                        <span><strong>ICMS:</strong> R$ ${parseFloat(invoice.value_icms || 0).toFixed(2)}</span>
+                                        ${invoice.value_st > 0 ? `<span><strong>ST:</strong> R$ ${parseFloat(invoice.value_st || 0).toFixed(2)}</span>` : ''}
+                                    </div>
+                                </div>
+                                <span class="st-badge no-st">Processada</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Erro ao carregar notas:', error);
+                document.getElementById('recentInvoices').innerHTML = '<div class="alert alert-danger"><span>❌</span><span>Erro ao carregar notas fiscais</span></div>';
+            }
+        }
+
+        // Update tab switching to load invoices
+        const originalSwitchTab = switchTab;
+        function switchTab(tabName) {
+            originalSwitchTab(tabName);
+            if (tabName === 'scanner') {
+                loadRecentInvoices();
+            }
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {

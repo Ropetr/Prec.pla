@@ -1,7 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(dir:*)",
+      "Bash(git push:*)",
+      "Bash(wrangler whoami:*)",
+      "Bash(npm install:*)",
+      "Bash(wrangler d1 list:*)",
+      "Bash(wrangler deployments:*)",
+      "Bash(wrangler d1 execute:*)",
+      "Bash(wrangler secret put:*)",
+      "Bash(wrangler deploy:*)",
+      "Bash(curl:*)",
+      "Bash(powershell -Command \"Invoke-RestMethod -Uri ''https://precplanac.planacacabamentos.workers.dev/api/product?code=000095'' -Method Get | ConvertTo-Json\")",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []

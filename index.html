@@ -726,6 +726,45 @@
                         </button>
                     </div>
 
+                    <!-- UF Selector -->
+                    <div style="margin-bottom: var(--planac-spacing-lg); background: var(--planac-gray-100); padding: var(--planac-spacing-lg); border-radius: var(--planac-radius-lg);">
+                        <label style="font-weight: 600; color: var(--planac-gray-700); display: block; margin-bottom: var(--planac-spacing-sm);">
+                            📍 Estado de Destino (UF):
+                        </label>
+                        <select id="ufSelector" class="search-input" style="width: 100%; max-width: 400px;" onchange="updatePricingUF()">
+                            <option value="SP" selected>SP - São Paulo (Interno - 18% ICMS)</option>
+                            <option value="AC">AC - Acre (Interstate - 7% ICMS)</option>
+                            <option value="AL">AL - Alagoas (Interstate - 7% ICMS)</option>
+                            <option value="AM">AM - Amazonas (Interstate - 7% ICMS)</option>
+                            <option value="AP">AP - Amapá (Interstate - 7% ICMS)</option>
+                            <option value="BA">BA - Bahia (Interstate - 7% ICMS)</option>
+                            <option value="CE">CE - Ceará (Interstate - 7% ICMS)</option>
+                            <option value="DF">DF - Distrito Federal (Interstate - 12% ICMS)</option>
+                            <option value="ES">ES - Espírito Santo (Interstate - 12% ICMS)</option>
+                            <option value="GO">GO - Goiás (Interstate - 12% ICMS)</option>
+                            <option value="MA">MA - Maranhão (Interstate - 7% ICMS)</option>
+                            <option value="MG">MG - Minas Gerais (Interstate - 12% ICMS)</option>
+                            <option value="MS">MS - Mato Grosso do Sul (Interstate - 12% ICMS)</option>
+                            <option value="MT">MT - Mato Grosso (Interstate - 12% ICMS)</option>
+                            <option value="PA">PA - Pará (Interstate - 7% ICMS)</option>
+                            <option value="PB">PB - Paraíba (Interstate - 7% ICMS)</option>
+                            <option value="PE">PE - Pernambuco (Interstate - 7% ICMS)</option>
+                            <option value="PI">PI - Piauí (Interstate - 7% ICMS)</option>
+                            <option value="PR">PR - Paraná (Interstate - 12% ICMS)</option>
+                            <option value="RJ">RJ - Rio de Janeiro (Interstate - 12% ICMS)</option>
+                            <option value="RN">RN - Rio Grande do Norte (Interstate - 7% ICMS)</option>
+                            <option value="RO">RO - Rondônia (Interstate - 7% ICMS)</option>
+                            <option value="RR">RR - Roraima (Interstate - 7% ICMS)</option>
+                            <option value="RS">RS - Rio Grande do Sul (Interstate - 12% ICMS)</option>
+                            <option value="SC">SC - Santa Catarina (Interstate - 12% ICMS)</option>
+                            <option value="SE">SE - Sergipe (Interstate - 7% ICMS)</option>
+                            <option value="TO">TO - Tocantins (Interstate - 7% ICMS)</option>
+                        </select>
+                        <p style="margin-top: var(--planac-spacing-sm); color: var(--planac-gray-600); font-size: 0.9rem;">
+                            ℹ️ Selecione o estado de destino para ver a precificação com impostos corretos (ICMS, DIFAL, ST)
+                        </p>
+                    </div>
+
                     <div id="searchResults"></div>
                 </div>
             </div>
@@ -1044,6 +1083,14 @@
             }
         }
 
+        // Update pricing when UF changes
+        function updatePricingUF() {
+            // Re-display products with new UF
+            if (products.length > 0) {
+                displayProductsList();
+            }
+        }
+
         // Display products list with pricing
         async function displayProductsList(productsList = null) {
             const resultsDiv = document.getElementById('searchResults');
@@ -1059,12 +1106,18 @@
                 return;
             }
 
-            let html = '<div class="results-container"><h3 style="margin-bottom: 20px;">' + productsToShow.length + ' produtos encontrados</h3>';
+            // Get selected UF
+            const ufSelector = document.getElementById('ufSelector');
+            const selectedUF = ufSelector ? ufSelector.value : 'SP';
+            const operation = selectedUF === 'SP' ? '5102' : '6102';
+
+            let html = '<div class="results-container">';
+            html += `<h3 style="margin-bottom: 20px;">${productsToShow.length} produtos encontrados - Estado: ${selectedUF}</h3>`;
 
             for (const product of productsToShow) {
                 // Calculate pricing with real API
                 try {
-                    const pricing = await api.calculatePricing(product.code, '5102', 'SP', 'consumidor', 30);
+                    const pricing = await api.calculatePricing(product.code, operation, selectedUF, 'consumidor', 30);
 
                     html += `
                         <div class="result-card">
@@ -1090,6 +1143,9 @@
                                 <div>
                                     <strong>ST:</strong> R$ ${pricing.calculation.st}
                                 </div>
+                                ${selectedUF !== 'SP' ? `<div>
+                                    <strong>DIFAL:</strong> R$ ${pricing.calculation.difal}
+                                </div>` : ''}
                                 <div>
                                     <strong>Preço Final:</strong> <span style="color: var(--planac-primary); font-weight: 700;">R$ ${pricing.calculation.finalPrice}</span>
                                 </div>
@@ -1165,12 +1221,25 @@
         // Calculate individual product price
         async function calculateProduct(code) {
             try {
-                const pricing = await api.calculatePricing(code, '5102', 'SP', 'consumidor', 30);
-                alert(`Produto: ${pricing.product.name}
+                // Get selected UF
+                const ufSelector = document.getElementById('ufSelector');
+                const selectedUF = ufSelector ? ufSelector.value : 'SP';
+                const operation = selectedUF === 'SP' ? '5102' : '6102';
+
+                const pricing = await api.calculatePricing(code, operation, selectedUF, 'consumidor', 30);
+
+                let message = `Produto: ${pricing.product.name}
 Custo: R$ ${pricing.calculation.cost}
-ICMS: R$ ${pricing.calculation.icms}
-ST: R$ ${pricing.calculation.st}
-Preço Final: R$ ${pricing.calculation.finalPrice}`);
+ICMS: R$ ${pricing.calculation.icms} (${pricing.taxes.icmsRate}%)
+ST: R$ ${pricing.calculation.st}`;
+
+                if (selectedUF !== 'SP') {
+                    message += `\nDIFAL: R$ ${pricing.calculation.difal}`;
+                }
+
+                message += `\nPreço Final: R$ ${pricing.calculation.finalPrice}`;
+
+                alert(message);
             } catch (error) {
                 alert('Erro ao calcular: ' + error.message);
             }

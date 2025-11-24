@@ -1,0 +1,18 @@
+# Cloudflare Build Configuration
+# https://developers.cloudflare.com/workers/
+
+build:
+  command: npm run build
+  deploy_command: npm run deploy
+  watch_paths:
+    - worker.js
+    - index.html
+    - scanner.html
+    - wrangler.toml
+
+# Node version
+node_version: 18
+
+# Environment
+production:
+  branch: main

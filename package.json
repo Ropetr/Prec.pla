@@ -5,9 +5,11 @@
   "main": "index.html",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler publish",
+    "deploy": "wrangler deploy",
     "deploy-pages": "echo 'Faça upload do index.html no Cloudflare Pages'",
-    "test": "echo \"No tests configured\""
+    "test": "echo \"No tests configured\"",
+    "build": "echo 'No build needed - static files'",
+    "version": "wrangler versions upload"
   },
   "keywords": [
     "planac",
@@ -25,6 +27,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/seu-usuario/planac-sistema.git"
+    "url": "https://github.com/Ropetr/Prec.pla.git"
   }
 }

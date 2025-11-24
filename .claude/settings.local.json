@@ -15,7 +15,8 @@
       "Bash(wrangler deploy:*)",
       "Bash(curl:*)",
       "Bash(powershell -Command \"Invoke-RestMethod -Uri ''https://precplanac.planacacabamentos.workers.dev/api/product?code=000095'' -Method Get | ConvertTo-Json\")",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(git push)"
     ],
     "deny": [],
     "ask": []

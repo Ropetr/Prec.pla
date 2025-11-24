@@ -569,6 +569,121 @@
             color: var(--planac-red-800);
             border-left: 4px solid var(--planac-danger);
         }
+
+        /* Profitability Dashboard */
+        .profit-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--planac-spacing-xs);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .profit-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .profit-dot.high {
+            background: var(--planac-success);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .profit-dot.medium {
+            background: var(--planac-warning);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+
+        .profit-dot.low {
+            background: var(--planac-danger);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            box-shadow: 0 10px 40px rgba(251, 191, 36, 0.3);
+        }
+
+        .stat-card.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 10px 40px rgba(239, 68, 68, 0.3);
+        }
+
+        .product-profit-card {
+            background: white;
+            border-radius: var(--planac-radius-lg);
+            padding: var(--planac-spacing-md);
+            border-left: 4px solid var(--planac-gray-300);
+            transition: all var(--planac-transition);
+        }
+
+        .product-profit-card:hover {
+            transform: translateX(4px);
+            box-shadow: var(--planac-shadow-md);
+        }
+
+        .product-profit-card.high-profit {
+            border-left-color: var(--planac-success);
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.05) 0%, white 100%);
+        }
+
+        .product-profit-card.medium-profit {
+            border-left-color: var(--planac-warning);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.05) 0%, white 100%);
+        }
+
+        .product-profit-card.low-profit {
+            border-left-color: var(--planac-danger);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--planac-gray-200);
+            border-radius: var(--planac-radius-full);
+            overflow: hidden;
+            margin-top: var(--planac-spacing-xs);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: var(--planac-radius-full);
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.high {
+            background: linear-gradient(90deg, var(--planac-success) 0%, #059669 100%);
+        }
+
+        .progress-fill.medium {
+            background: linear-gradient(90deg, var(--planac-warning) 0%, #f59e0b 100%);
+        }
+
+        .progress-fill.low {
+            background: linear-gradient(90deg, var(--planac-danger) 0%, #dc2626 100%);
+        }
     </style>
 </head>
 <body>
@@ -653,53 +768,51 @@
         <main class="content">
             <!-- Dashboard Tab -->
             <div id="dashboard" class="tab-content active">
-                <h2 style="margin-bottom: var(--planac-spacing-lg);">Dashboard</h2>
-                
-                <div class="dashboard-grid">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Dashboard de Lucratividade</h2>
+
+                <!-- Summary Cards -->
+                <div class="dashboard-grid" id="dashboardSummary">
                     <div class="stat-card primary">
                         <div class="stat-icon">📦</div>
-                        <div class="stat-value">572</div>
+                        <div class="stat-value" id="totalProducts">-</div>
                         <div class="stat-label">Produtos Cadastrados</div>
                     </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-value">225</div>
-                        <div class="stat-label">Notas Processadas</div>
+
+                    <div class="stat-card success">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value" id="highProfitCount">-</div>
+                        <div class="stat-label">Alta Lucratividade (>35%)</div>
                     </div>
-                    
-                    <div class="stat-card">
+
+                    <div class="stat-card warning">
                         <div class="stat-icon">⚠️</div>
-                        <div class="stat-value">87</div>
-                        <div class="stat-label">Produtos com ST</div>
+                        <div class="stat-value" id="mediumProfitCount">-</div>
+                        <div class="stat-label">Margem Média (25-35%)</div>
                     </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-value">12.5%</div>
-                        <div class="stat-label">Margem Média</div>
+
+                    <div class="stat-card danger">
+                        <div class="stat-icon">🚨</div>
+                        <div class="stat-value" id="lowProfitCount">-</div>
+                        <div class="stat-label">Margem Baixa (<25%)</div>
                     </div>
                 </div>
 
-                <div class="alert alert-info">
-                    <span>ℹ️</span>
-                    <span>Sistema atualizado com 572 produtos e integração com notas fiscais.</span>
+                <!-- Profit by Groups -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md); margin-bottom: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">📊 Lucratividade por Grupo</h3>
+                    <div id="groupsProfitReport"></div>
                 </div>
 
-                <!-- Recent Activities -->
-                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-lg); box-shadow: var(--planac-shadow-md);">
-                    <h3 style="margin-bottom: var(--planac-spacing-md);">Atividades Recentes</h3>
-                    <div style="display: flex; flex-direction: column; gap: var(--planac-spacing-sm);">
-                        <div style="padding: var(--planac-spacing-sm); background: var(--planac-gray-50); border-radius: var(--planac-radius-md);">
-                            ✅ 15 produtos precificados hoje
-                        </div>
-                        <div style="padding: var(--planac-spacing-sm); background: var(--planac-gray-50); border-radius: var(--planac-radius-md);">
-                            📧 3 XMLs processados dos emails
-                        </div>
-                        <div style="padding: var(--planac-spacing-sm); background: var(--planac-gray-50); border-radius: var(--planac-radius-md);">
-                            ⚠️ 5 produtos precisam revisão de margem
-                        </div>
-                    </div>
+                <!-- Products Requiring Attention -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md); margin-bottom: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">⚠️ Produtos que Precisam Atenção</h3>
+                    <div id="productsAttention"></div>
+                </div>
+
+                <!-- Top Profitable Products -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-xl); box-shadow: var(--planac-shadow-md);">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">🏆 Produtos Mais Lucrativos</h3>
+                    <div id="topProfitableProducts"></div>
                 </div>
             </div>
 
@@ -1177,10 +1290,212 @@
             }
         });
 
-        // Load Dashboard
-        function loadDashboard() {
-            // Dashboard is static for now
-            console.log('Dashboard loaded');
+        // Load Dashboard with Profitability Data
+        async function loadDashboard() {
+            try {
+                // Get all products
+                if (products.length === 0) {
+                    products = await api.getProducts();
+                }
+
+                // Calculate profitability for all products
+                const profitData = await calculateProfitabilityData();
+
+                // Update summary cards
+                document.getElementById('totalProducts').textContent = profitData.total;
+                document.getElementById('highProfitCount').textContent = profitData.highProfit;
+                document.getElementById('mediumProfitCount').textContent = profitData.mediumProfit;
+                document.getElementById('lowProfitCount').textContent = profitData.lowProfit;
+
+                // Load groups profit report
+                await loadGroupsProfitReport();
+
+                // Load products requiring attention
+                displayProductsRequiringAttention(profitData.lowProfitProducts);
+
+                // Load top profitable products
+                displayTopProfitableProducts(profitData.highProfitProducts);
+
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+
+        // Calculate profitability data for all products
+        async function calculateProfitabilityData() {
+            const highProfitProducts = [];
+            const mediumProfitProducts = [];
+            const lowProfitProducts = [];
+
+            for (const product of products) {
+                try {
+                    // Calculate with 30% margin
+                    const pricing = await api.calculatePricing(product.code, '5102', 'SP', 'consumidor', 30);
+
+                    const cost = parseFloat(pricing.calculation.cost);
+                    const finalPrice = parseFloat(pricing.calculation.finalPrice);
+                    const profitMargin = ((finalPrice - cost) / finalPrice) * 100;
+
+                    const productData = {
+                        ...product,
+                        cost,
+                        finalPrice,
+                        profitMargin: profitMargin.toFixed(2)
+                    };
+
+                    if (profitMargin > 35) {
+                        highProfitProducts.push(productData);
+                    } else if (profitMargin >= 25) {
+                        mediumProfitProducts.push(productData);
+                    } else {
+                        lowProfitProducts.push(productData);
+                    }
+                } catch (error) {
+                    console.error(`Erro ao calcular ${product.code}:`, error);
+                }
+            }
+
+            // Sort by margin
+            highProfitProducts.sort((a, b) => b.profitMargin - a.profitMargin);
+            lowProfitProducts.sort((a, b) => a.profitMargin - b.profitMargin);
+
+            return {
+                total: products.length,
+                highProfit: highProfitProducts.length,
+                mediumProfit: mediumProfitProducts.length,
+                lowProfit: lowProfitProducts.length,
+                highProfitProducts: highProfitProducts.slice(0, 10),
+                lowProfitProducts: lowProfitProducts.slice(0, 10)
+            };
+        }
+
+        // Load groups profit report
+        async function loadGroupsProfitReport() {
+            try {
+                const report = await fetch('https://planac-sistema.planacacabamentos.workers.dev/api/reports/groups').then(r => r.json());
+
+                const container = document.getElementById('groupsProfitReport');
+                let html = '';
+
+                for (const group of report) {
+                    const avgCost = parseFloat(group.avg_cost || 0);
+                    const minMargin = parseFloat(group.min_margin || 0);
+                    const maxMargin = parseFloat(group.max_margin || 0);
+                    const avgMargin = (minMargin + maxMargin) / 2;
+
+                    let profitClass = 'low';
+                    if (avgMargin > 35) profitClass = 'high';
+                    else if (avgMargin >= 25) profitClass = 'medium';
+
+                    html += `
+                        <div class="product-profit-card ${profitClass}-profit" style="margin-bottom: var(--planac-spacing-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--planac-spacing-sm);">
+                                <div>
+                                    <strong style="font-size: 1.1rem;">${group.group_name}</strong>
+                                    <div style="color: var(--planac-gray-600); font-size: 0.9rem; margin-top: 4px;">
+                                        ${group.product_count} produtos • Custo médio: R$ ${avgCost.toFixed(2)}
+                                    </div>
+                                </div>
+                                <div class="profit-indicator">
+                                    <span class="profit-dot ${profitClass}"></span>
+                                    <span>${avgMargin.toFixed(1)}%</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${profitClass}" style="width: ${Math.min(avgMargin, 100)}%"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: var(--planac-spacing-xs); font-size: 0.85rem; color: var(--planac-gray-600);">
+                                <span>Margem: ${minMargin}% - ${maxMargin}%</span>
+                                <span>Valor em estoque: R$ ${parseFloat(group.stock_value || 0).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = html || '<p style="color: var(--planac-gray-500);">Nenhum grupo encontrado</p>';
+            } catch (error) {
+                console.error('Erro ao carregar relatório de grupos:', error);
+            }
+        }
+
+        // Display products requiring attention (low profit)
+        function displayProductsRequiringAttention(lowProfitProducts) {
+            const container = document.getElementById('productsAttention');
+
+            if (lowProfitProducts.length === 0) {
+                container.innerHTML = '<div class="alert alert-success"><span>✅</span><span>Todos os produtos estão com margem adequada!</span></div>';
+                return;
+            }
+
+            let html = '';
+            for (const product of lowProfitProducts) {
+                html += `
+                    <div class="product-profit-card low-profit" style="margin-bottom: var(--planac-spacing-md);">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <strong style="font-size: 1rem;">${product.name}</strong>
+                                <div style="color: var(--planac-gray-600); font-size: 0.85rem; margin-top: 4px;">
+                                    Código: ${product.code} | NCM: ${product.ncm}
+                                </div>
+                                <div style="margin-top: var(--planac-spacing-sm); display: flex; gap: var(--planac-spacing-md); font-size: 0.9rem;">
+                                    <span><strong>Custo:</strong> R$ ${product.cost.toFixed(2)}</span>
+                                    <span><strong>Preço:</strong> R$ ${product.finalPrice.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="profit-indicator">
+                                <span class="profit-dot low"></span>
+                                <span style="color: var(--planac-danger); font-size: 1.2rem; font-weight: 700;">${product.profitMargin}%</span>
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" style="margin-top: var(--planac-spacing-sm); padding: var(--planac-spacing-sm);">
+                            <span>⚠️</span>
+                            <span>Margem abaixo do recomendado. Considere revisar o preço de venda.</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Display top profitable products
+        function displayTopProfitableProducts(highProfitProducts) {
+            const container = document.getElementById('topProfitableProducts');
+
+            if (highProfitProducts.length === 0) {
+                container.innerHTML = '<p style="color: var(--planac-gray-500);">Nenhum produto com alta lucratividade encontrado</p>';
+                return;
+            }
+
+            let html = '';
+            for (const product of highProfitProducts) {
+                html += `
+                    <div class="product-profit-card high-profit" style="margin-bottom: var(--planac-spacing-md);">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <strong style="font-size: 1rem;">${product.name}</strong>
+                                <div style="color: var(--planac-gray-600); font-size: 0.85rem; margin-top: 4px;">
+                                    Código: ${product.code} | NCM: ${product.ncm}
+                                </div>
+                                <div style="margin-top: var(--planac-spacing-sm); display: flex; gap: var(--planac-spacing-md); font-size: 0.9rem;">
+                                    <span><strong>Custo:</strong> R$ ${product.cost.toFixed(2)}</span>
+                                    <span><strong>Preço:</strong> R$ ${product.finalPrice.toFixed(2)}</span>
+                                    <span><strong>Lucro:</strong> R$ ${(product.finalPrice - product.cost).toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div class="profit-indicator">
+                                <span class="profit-dot high"></span>
+                                <span style="color: var(--planac-success); font-size: 1.2rem; font-weight: 700;">${product.profitMargin}%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill high" style="width: ${Math.min(parseFloat(product.profitMargin), 100)}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
         }
 
         // Load Products

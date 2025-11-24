@@ -1,0 +1,6 @@
+# Sistema PLANAC - Deploy Configuration
+# Last updated: 2025-11-24
+
+STATUS=ready
+VERSION=2.0.0
+DEPLOY_AUTO=enabled

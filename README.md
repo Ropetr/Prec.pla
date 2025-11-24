@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏗️ Sistema de Precificação PLANAC
 
 Sistema completo de precificação com cálculo tributário, gestão de produtos e integração com notas fiscais.
@@ -205,3 +206,6 @@ Para dúvidas ou problemas:
 ---
 
 **Desenvolvido para otimização tributária e precificação inteligente**
+=======
+# Prec.pla
+>>>>>>> f88fd9ee47d59fd162b998260f41cc75d49da10d

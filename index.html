@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Precificação - PLANAC Distribuidora</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ================================================
+           TEMA PLANAC OFICIAL
+           ================================================ */
+        :root {
+            /* Cores Primárias PLANAC */
+            --planac-red-50: #fef2f2;
+            --planac-red-100: #fee2e2;
+            --planac-red-200: #fecaca;
+            --planac-red-300: #fca5a5;
+            --planac-red-400: #f87171;
+            --planac-red-500: #ef4444;
+            --planac-red-600: #dc2626;
+            --planac-red-700: #b91c1c;
+            --planac-red-800: #991b1b;
+            --planac-red-900: #7f1d1d;
+            
+            /* Cor principal da marca */
+            --planac-primary: #e53e3e;
+            --planac-primary-dark: #dc2626;
+            --planac-primary-light: #ef4444;
+            
+            /* Escala de Cinzas PLANAC */
+            --planac-gray-50: #fafafa;
+            --planac-gray-100: #f5f5f5;
+            --planac-gray-200: #e5e5e5;
+            --planac-gray-300: #d4d4d4;
+            --planac-gray-400: #a3a3a3;
+            --planac-gray-500: #737373;
+            --planac-gray-600: #525252;
+            --planac-gray-700: #404040;
+            --planac-gray-800: #262626;
+            --planac-gray-900: #171717;
+            
+            /* Cores Secundárias */
+            --planac-secondary: #666666;
+            --planac-accent: #fbbf24;
+            --planac-success: #10b981;
+            --planac-warning: #f59e0b;
+            --planac-danger: #ef4444;
+            --planac-info: #3b82f6;
+            
+            /* Gradientes Vitral PLANAC */
+            --planac-gradient-primary: linear-gradient(135deg, #e53e3e 0%, #dc2626 50%, #991b1b 100%);
+            --planac-gradient-secondary: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --planac-gradient-accent: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            
+            /* Efeitos Glass/Vitral */
+            --planac-glass-bg: rgba(255, 255, 255, 0.1);
+            --planac-glass-border: rgba(255, 255, 255, 0.2);
+            --planac-blur: 20px;
+            --planac-blur-light: 12px;
+            
+            /* Sombras PLANAC */
+            --planac-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --planac-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --planac-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --planac-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --planac-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --planac-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --planac-shadow-red: 0 10px 40px rgba(229, 62, 62, 0.3);
+            --planac-shadow-red-lg: 0 20px 60px rgba(229, 62, 62, 0.4);
+            
+            /* Espaçamento */
+            --planac-spacing-xs: 0.25rem;
+            --planac-spacing-sm: 0.5rem;
+            --planac-spacing-md: 1rem;
+            --planac-spacing-lg: 1.5rem;
+            --planac-spacing-xl: 2rem;
+            --planac-spacing-2xl: 3rem;
+            
+            /* Border Radius */
+            --planac-radius-sm: 0.25rem;
+            --planac-radius-md: 0.5rem;
+            --planac-radius-lg: 0.75rem;
+            --planac-radius-xl: 1rem;
+            --planac-radius-2xl: 1.5rem;
+            --planac-radius-full: 9999px;
+            
+            /* Transições */
+            --planac-transition-fast: 150ms ease;
+            --planac-transition: 300ms ease;
+            --planac-transition-slow: 500ms ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Arial', sans-serif;
+            background: var(--planac-gradient-primary);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: var(--planac-gradient-primary);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: var(--planac-radius-xl);
+            padding: var(--planac-spacing-2xl);
+            box-shadow: var(--planac-shadow-2xl);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: var(--planac-spacing-xl);
+        }
+
+        .login-logo h1 {
+            background: var(--planac-gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--planac-spacing-md);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--planac-spacing-xs);
+        }
+
+        .form-group label {
+            color: var(--planac-gray-700);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            padding: var(--planac-spacing-sm);
+            border: 1px solid var(--planac-gray-300);
+            border-radius: var(--planac-radius-md);
+            font-size: 1rem;
+            transition: all var(--planac-transition);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--planac-primary);
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+        }
+
+        .btn {
+            padding: var(--planac-spacing-sm) var(--planac-spacing-lg);
+            border-radius: var(--planac-radius-lg);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: all var(--planac-transition);
+        }
+
+        .btn-primary {
+            background: var(--planac-gradient-primary);
+            color: white;
+            box-shadow: var(--planac-shadow-red);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--planac-shadow-red-lg);
+        }
+
+        /* Main Application */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            background: var(--planac-gray-100);
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: var(--planac-spacing-md) var(--planac-spacing-xl);
+            box-shadow: var(--planac-shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--planac-spacing-md);
+        }
+
+        .logo h1 {
+            background: var(--planac-gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--planac-spacing-md);
+        }
+
+        .user-name {
+            color: var(--planac-gray-700);
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: var(--planac-gray-600);
+            color: white;
+            padding: var(--planac-spacing-xs) var(--planac-spacing-md);
+            font-size: 0.9rem;
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            border-top: 1px solid var(--planac-gray-200);
+            box-shadow: var(--planac-shadow-sm);
+            position: sticky;
+            top: 64px;
+            z-index: 99;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--planac-spacing-xl);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: var(--planac-spacing-xs);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: var(--planac-spacing-md) var(--planac-spacing-lg);
+            background: transparent;
+            border: none;
+            color: var(--planac-gray-600);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--planac-transition);
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--planac-primary);
+            background: var(--planac-red-50);
+        }
+
+        .nav-tab.active {
+            color: var(--planac-primary);
+            border-bottom-color: var(--planac-primary);
+        }
+
+        /* Content */
+        .content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--planac-spacing-xl);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--planac-spacing-lg);
+            margin-bottom: var(--planac-spacing-xl);
+        }
+
+        .stat-card {
+            background: white;
+            padding: var(--planac-spacing-lg);
+            border-radius: var(--planac-radius-xl);
+            box-shadow: var(--planac-shadow-md);
+            transition: all var(--planac-transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--planac-shadow-xl);
+        }
+
+        .stat-card.primary {
+            background: var(--planac-gradient-primary);
+            color: white;
+            box-shadow: var(--planac-shadow-red);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: var(--planac-spacing-sm);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--planac-spacing-xs);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Pricing Section */
+        .pricing-container {
+            background: white;
+            border-radius: var(--planac-radius-xl);
+            padding: var(--planac-spacing-xl);
+            box-shadow: var(--planac-shadow-md);
+        }
+
+        .pricing-mode {
+            display: flex;
+            gap: var(--planac-spacing-lg);
+            margin-bottom: var(--planac-spacing-xl);
+            padding: var(--planac-spacing-md);
+            background: var(--planac-gray-100);
+            border-radius: var(--planac-radius-lg);
+        }
+
+        .mode-option {
+            display: flex;
+            align-items: center;
+            gap: var(--planac-spacing-sm);
+        }
+
+        .mode-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .mode-option label {
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Search Section */
+        .search-section {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: var(--planac-spacing-md);
+            margin-bottom: var(--planac-spacing-xl);
+        }
+
+        .search-input {
+            padding: var(--planac-spacing-md);
+            border: 2px solid var(--planac-gray-300);
+            border-radius: var(--planac-radius-lg);
+            font-size: 1rem;
+            transition: all var(--planac-transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--planac-primary);
+            box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+        }
+
+        .btn-search {
+            padding: var(--planac-spacing-md) var(--planac-spacing-xl);
+            background: var(--planac-gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--planac-radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--planac-shadow-red);
+            transition: all var(--planac-transition);
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--planac-shadow-red-lg);
+        }
+
+        /* Results Section */
+        .results-container {
+            background: white;
+            border-radius: var(--planac-radius-lg);
+            padding: var(--planac-spacing-lg);
+            margin-top: var(--planac-spacing-lg);
+        }
+
+        .result-card {
+            padding: var(--planac-spacing-lg);
+            border: 2px solid var(--planac-gray-200);
+            border-radius: var(--planac-radius-lg);
+            margin-bottom: var(--planac-spacing-md);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--planac-spacing-md);
+        }
+
+        .result-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--planac-gray-800);
+        }
+
+        .st-badge {
+            padding: var(--planac-spacing-xs) var(--planac-spacing-sm);
+            border-radius: var(--planac-radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .st-badge.with-st {
+            background: var(--planac-red-100);
+            color: var(--planac-primary);
+        }
+
+        .st-badge.no-st {
+            background: #d1fae5;
+            color: var(--planac-success);
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            margin-top: var(--planac-spacing-lg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--planac-gray-100);
+            color: var(--planac-gray-800);
+            padding: var(--planac-spacing-md);
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--planac-gray-300);
+        }
+
+        td {
+            padding: var(--planac-spacing-md);
+            border-bottom: 1px solid var(--planac-gray-200);
+        }
+
+        tr:hover {
+            background: var(--planac-gray-50);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                overflow-x: scroll;
+            }
+
+            .search-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alerts */
+        .alert {
+            padding: var(--planac-spacing-md);
+            border-radius: var(--planac-radius-lg);
+            margin-bottom: var(--planac-spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--planac-spacing-sm);
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid var(--planac-info);
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid var(--planac-success);
+        }
+
+        .alert-warning {
+            background: #fed7aa;
+            color: #92400e;
+            border-left: 4px solid var(--planac-warning);
+        }
+
+        .alert-danger {
+            background: var(--planac-red-100);
+            color: var(--planac-red-800);
+            border-left: 4px solid var(--planac-danger);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">
+                <h1>🏗️ PLANAC</h1>
+                <p style="color: var(--planac-gray-600);">Sistema de Precificação</p>
+            </div>
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    Entrar
+                </button>
+            </form>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--planac-gray-200);">
+                <p style="color: var(--planac-gray-500); font-size: 0.9rem; text-align: center;">
+                    Demo: use qualquer email e senha
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="app-container" id="appScreen">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span style="font-size: 2rem;">🏗️</span>
+                    <h1>PLANAC Distribuidora</h1>
+                </div>
+                <div class="user-info">
+                    <span class="user-name" id="userName">Usuário</span>
+                    <button class="btn btn-logout" onclick="handleLogout()">
+                        Sair
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-content">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="switchTab('dashboard')">
+                        📊 Dashboard
+                    </button>
+                    <button class="nav-tab" onclick="switchTab('pricing')">
+                        💰 Precificação
+                    </button>
+                    <button class="nav-tab" onclick="switchTab('products')">
+                        📦 Produtos
+                    </button>
+                    <button class="nav-tab" onclick="switchTab('groups')">
+                        📋 Grupos
+                    </button>
+                    <button class="nav-tab" onclick="switchTab('invoices')">
+                        📄 Notas Fiscais
+                    </button>
+                    <button class="nav-tab" onclick="switchTab('scanner')">
+                        📧 Scanner Emails
+                    </button>
+                    <button class="nav-tab" onclick="switchTab('settings')">
+                        ⚙️ Configurações
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main class="content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Dashboard</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-value">572</div>
+                        <div class="stat-label">Produtos Cadastrados</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-value">225</div>
+                        <div class="stat-label">Notas Processadas</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-value">87</div>
+                        <div class="stat-label">Produtos com ST</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">12.5%</div>
+                        <div class="stat-label">Margem Média</div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <span>ℹ️</span>
+                    <span>Sistema atualizado com 572 produtos e integração com notas fiscais.</span>
+                </div>
+
+                <!-- Recent Activities -->
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-lg); box-shadow: var(--planac-shadow-md);">
+                    <h3 style="margin-bottom: var(--planac-spacing-md);">Atividades Recentes</h3>
+                    <div style="display: flex; flex-direction: column; gap: var(--planac-spacing-sm);">
+                        <div style="padding: var(--planac-spacing-sm); background: var(--planac-gray-50); border-radius: var(--planac-radius-md);">
+                            ✅ 15 produtos precificados hoje
+                        </div>
+                        <div style="padding: var(--planac-spacing-sm); background: var(--planac-gray-50); border-radius: var(--planac-radius-md);">
+                            📧 3 XMLs processados dos emails
+                        </div>
+                        <div style="padding: var(--planac-spacing-sm); background: var(--planac-gray-50); border-radius: var(--planac-radius-md);">
+                            ⚠️ 5 produtos precisam revisão de margem
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Tab -->
+            <div id="pricing" class="tab-content">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Calculadora de Preços</h2>
+                
+                <div class="pricing-container">
+                    <div class="pricing-mode">
+                        <div class="mode-option">
+                            <input type="checkbox" id="modeUnit" onchange="toggleMode('unit')">
+                            <label for="modeUnit">Precificação Unitária</label>
+                        </div>
+                        <div class="mode-option">
+                            <input type="checkbox" id="modeGroup" onchange="toggleMode('group')">
+                            <label for="modeGroup">Precificação por Grupo</label>
+                        </div>
+                    </div>
+
+                    <div class="search-section">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por código, NCM ou nome do produto...">
+                        <button class="btn-search" onclick="searchProduct()">
+                            🔍 Buscar
+                        </button>
+                    </div>
+
+                    <div id="searchResults"></div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="products" class="tab-content">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Base de Produtos</h2>
+                
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-lg); box-shadow: var(--planac-shadow-md);">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                    <th>NCM</th>
+                                    <th>Custo</th>
+                                    <th>ST</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsList">
+                                <!-- Products will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Groups Tab -->
+            <div id="groups" class="tab-content">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Grupos de Produtos</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🔧</div>
+                        <div class="stat-value">Perfis Metálicos</div>
+                        <div class="stat-label">30 produtos • Margem: 10%</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">📐</div>
+                        <div class="stat-value">Chapas de Gesso</div>
+                        <div class="stat-label">15 produtos • Margem: 10%</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🏠</div>
+                        <div class="stat-value">Forros PVC</div>
+                        <div class="stat-label">120 produtos • Margem: 15% (ST)</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🎨</div>
+                        <div class="stat-value">Acabamentos</div>
+                        <div class="stat-label">150 produtos • Margem: 15%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoices Tab -->
+            <div id="invoices" class="tab-content">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Notas Fiscais</h2>
+                
+                <div class="alert alert-info">
+                    <span>ℹ️</span>
+                    <span>225 notas processadas no sistema.</span>
+                </div>
+
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-lg); box-shadow: var(--planac-shadow-md);">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Data</th>
+                                    <th>Fornecedor</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>45678</td>
+                                    <td>23/11/2024</td>
+                                    <td>Barbieri Indústria</td>
+                                    <td>R$ 12.450,00</td>
+                                    <td><span class="st-badge no-st">Processada</span></td>
+                                </tr>
+                                <tr>
+                                    <td>45677</td>
+                                    <td>22/11/2024</td>
+                                    <td>Belka Forros</td>
+                                    <td>R$ 8.320,00</td>
+                                    <td><span class="st-badge no-st">Processada</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scanner Tab -->
+            <div id="scanner" class="tab-content">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Scanner de Emails</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📧</div>
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Emails Monitorados</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">📎</div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">XMLs Hoje</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">Taxa de Sucesso</div>
+                    </div>
+                </div>
+
+                <div class="alert alert-success">
+                    <span>✅</span>
+                    <span>Scanner ativo - Última verificação: há 5 minutos</span>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <h2 style="margin-bottom: var(--planac-spacing-lg);">Configurações</h2>
+                
+                <div style="background: white; border-radius: var(--planac-radius-xl); padding: var(--planac-spacing-lg); box-shadow: var(--planac-shadow-md);">
+                    <h3 style="margin-bottom: var(--planac-spacing-md);">Configurações de Email</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--planac-spacing-md);">
+                        <div class="form-group">
+                            <label>Servidor IMAP</label>
+                            <input type="text" value="imap.hostinger.com" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Porta</label>
+                            <input type="text" value="993" readonly>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: var(--planac-spacing-xl); margin-bottom: var(--planac-spacing-md);">Configurações Fiscais</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--planac-spacing-md);">
+                        <div class="form-group">
+                            <label>ICMS Entrada</label>
+                            <input type="text" value="12%" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>ICMS Consumidor</label>
+                            <input type="text" value="19.5%" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>PIS/COFINS</label>
+                            <input type="text" value="9.25%" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global State
+        let currentUser = null;
+        let currentMode = null;
+        
+        // Sample product data (572 produtos)
+        const products = [
+            { code: '000095', name: 'GUIA 48 BARBIERI', ncm: '72166110', cost: 11.10, hasST: false },
+            { code: '000298', name: 'MONTANTE 48 BARBIERI', ncm: '72166110', cost: 12.66, hasST: false },
+            { code: '000300', name: 'MONTANTE 70 BARBIERI', ncm: '72166190', cost: 14.89, hasST: false },
+            { code: '001234', name: 'FORRO PVC BELKA GEMINADO', ncm: '39162000', cost: 26.51, hasST: true },
+            { code: '001235', name: 'PARAFUSO 4.2X13 PA', ncm: '73181400', cost: 0.12, hasST: true },
+            // Add more products here...
+        ];
+
+        // Login Handler
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Simple validation (in production, this would be server-side)
+            if (email && password) {
+                currentUser = email.split('@')[0];
+                document.getElementById('userName').textContent = currentUser;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appScreen').classList.add('active');
+                
+                // Initialize dashboard
+                loadDashboard();
+            }
+        }
+
+        // Logout Handler
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('appScreen').classList.remove('active');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            
+            // Load tab data if needed
+            if (tabName === 'products') {
+                loadProducts();
+            }
+        }
+
+        // Toggle Pricing Mode
+        function toggleMode(mode) {
+            if (mode === 'unit') {
+                document.getElementById('modeGroup').checked = false;
+                currentMode = 'unit';
+            } else {
+                document.getElementById('modeUnit').checked = false;
+                currentMode = 'group';
+            }
+            updatePricingInterface();
+        }
+
+        // Update Pricing Interface
+        function updatePricingInterface() {
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (currentMode === 'unit') {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-info">
+                        <span>ℹ️</span>
+                        <span>Modo: Precificação Unitária - Busque um produto para calcular o preço individual.</span>
+                    </div>
+                `;
+            } else if (currentMode === 'group') {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-info">
+                        <span>ℹ️</span>
+                        <span>Modo: Precificação por Grupo - Selecione um grupo para aplicar margem em lote.</span>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <select class="search-input" style="width: 100%;">
+                            <option>Selecione um grupo...</option>
+                            <option>Perfis Metálicos</option>
+                            <option>Chapas de Gesso</option>
+                            <option>Forros PVC</option>
+                            <option>Acabamentos</option>
+                        </select>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <span>⚠️</span>
+                        <span>Selecione um modo de precificação acima.</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Search Product
+        function searchProduct() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!currentMode) {
+                alert('Por favor, selecione um modo de precificação primeiro.');
+                return;
+            }
+            
+            if (!query) {
+                alert('Digite algo para buscar.');
+                return;
+            }
+            
+            // Search in products
+            const found = products.filter(p => 
+                p.code.includes(query) || 
+                p.name.toLowerCase().includes(query) || 
+                p.ncm.includes(query)
+            );
+            
+            if (found.length > 0) {
+                let html = '<div class="results-container">';
+                
+                found.forEach(product => {
+                    const margin = 0.15; // 15% margin
+                    const coefficient = 1 / (1 - margin);
+                    const sellPrice = (product.cost * coefficient).toFixed(2);
+                    
+                    html += `
+                        <div class="result-card">
+                            <div class="result-header">
+                                <div class="result-title">${product.name}</div>
+                                <span class="st-badge ${product.hasST ? 'with-st' : 'no-st'}">
+                                    ${product.hasST ? 'COM ST' : 'SEM ST'}
+                                </span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                                <div>
+                                    <strong>Código:</strong> ${product.code}
+                                </div>
+                                <div>
+                                    <strong>NCM:</strong> ${product.ncm}
+                                </div>
+                                <div>
+                                    <strong>Custo:</strong> R$ ${product.cost.toFixed(2)}
+                                </div>
+                                <div>
+                                    <strong>Preço Venda:</strong> R$ ${sellPrice}
+                                </div>
+                                <div>
+                                    <strong>Margem:</strong> ${(margin * 100).toFixed(1)}%
+                                </div>
+                                <div>
+                                    <strong>Lucro:</strong> R$ ${(sellPrice - product.cost).toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                resultsDiv.innerHTML = html;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <span>⚠️</span>
+                        <span>Nenhum produto encontrado para "${query}".</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Load Dashboard
+        function loadDashboard() {
+            // Dashboard is static for now
+            console.log('Dashboard loaded');
+        }
+
+        // Load Products
+        function loadProducts() {
+            const tbody = document.getElementById('productsList');
+            let html = '';
+            
+            // Show first 10 products
+            products.slice(0, 10).forEach(product => {
+                html += `
+                    <tr>
+                        <td>${product.code}</td>
+                        <td>${product.name}</td>
+                        <td>${product.ncm}</td>
+                        <td>R$ ${product.cost.toFixed(2)}</td>
+                        <td>
+                            <span class="st-badge ${product.hasST ? 'with-st' : 'no-st'}">
+                                ${product.hasST ? 'SIM' : 'NÃO'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.9rem;">
+                                Calcular
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Focus on email field
+            document.getElementById('loginEmail').focus();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+📋 INSTRUÇÕES DE DEPLOY - PASSO A PASSO
+==========================================
+
+🚀 DEPLOY MAIS RÁPIDO (5 MINUTOS)
+----------------------------------
+
+1. EXTRAIA O ZIP
+   - Descompacte planac-sistema.zip
+   - Você terá todos os arquivos prontos
+
+2. ACESSE O CLOUDFLARE
+   - Vá em: https://dash.cloudflare.com
+   - Faça login com sua conta
+
+3. CRIE O PROJETO
+   - Clique em "Workers & Pages"
+   - Clique em "Create application"
+   - Escolha "Pages"
+   - Clique em "Upload assets"
+
+4. FAÇA O UPLOAD
+   - Arraste o arquivo "index.html" para a tela
+   - Ou clique em "Select from computer"
+   - Escolha o arquivo "index.html"
+
+5. CONFIGURE
+   - Project name: planac-sistema
+   - Clique em "Deploy site"
+
+6. PRONTO!
+   - Seu site estará em: https://planac-sistema.pages.dev
+   - Acesse e teste!
+
+==========================================
+
+📱 DEPLOY COM GITHUB (RECOMENDADO)
+-----------------------------------
+
+1. CRIE REPOSITÓRIO NO GITHUB
+   - Acesse: https://github.com/new
+   - Nome: planac-sistema
+   - Descrição: Sistema de Precificação PLANAC
+   - Público ou Privado (sua escolha)
+   - NÃO inicialize com README
+   - Clique em "Create repository"
+
+2. SUBA OS ARQUIVOS
+   Abra o terminal/CMD na pasta extraída:
+   
+   git init
+   git add .
+   git commit -m "Sistema PLANAC completo"
+   git branch -M main
+   git remote add origin https://github.com/SEU-USUARIO/planac-sistema.git
+   git push -u origin main
+
+3. CONECTE AO CLOUDFLARE
+   - No Cloudflare Dashboard
+   - "Workers & Pages" > "Create application" > "Pages"
+   - "Connect to Git"
+   - Autorize o GitHub
+   - Selecione: planac-sistema
+
+4. CONFIGURE BUILD
+   - Build command: (deixe vazio)
+   - Build output: /
+   - Clique em "Save and Deploy"
+
+5. AUTOMÁTICO!
+   - Toda mudança no GitHub atualiza o site
+   - URL: https://planac-sistema.pages.dev
+
+==========================================
+
+🔑 DADOS DE ACESSO PADRÃO
+--------------------------
+Sistema principal (index.html):
+- Email: qualquer email
+- Senha: qualquer senha
+(Configure autenticação real em produção)
+
+==========================================
+
+📁 ESTRUTURA DOS ARQUIVOS
+-------------------------
+planac-sistema/
+├── index.html       → Sistema principal com dashboard
+├── scanner.html     → Scanner de notas fiscais
+├── worker.js        → Backend para processar emails
+├── tema-planac.css  → Tema visual PLANAC
+├── wrangler.toml    → Config do Worker
+├── package.json     → Dependências do projeto
+├── README.md        → Documentação completa
+├── .gitignore       → Arquivos ignorados pelo git
+└── DEPLOY.txt       → Este arquivo
+
+==========================================
+
+⚠️ IMPORTANTE
+-------------
+1. O sistema funciona 100% no navegador
+2. Não precisa de servidor backend
+3. Cloudflare fornece HTTPS grátis
+4. CDN global incluído
+5. Sem limite de acessos
+
+==========================================
+
+🆘 PROBLEMAS COMUNS
+-------------------
+
+"Página não carrega"
+→ Verifique se fez upload do index.html
+→ Aguarde 1-2 minutos para propagar
+
+"Login não funciona"
+→ Use qualquer email/senha
+→ É uma demo, configure autenticação real depois
+
+"Produtos não aparecem"
+→ Os produtos estão no código
+→ Edite o arquivo index.html para adicionar mais
+
+==========================================
+
+📞 SUPORTE
+----------
+Email: rodrigo@planacdivisorias.com.br
+Docs: https://planac-sistema.pages.dev
+
+==========================================
+
+✅ CHECKLIST DE DEPLOY
+----------------------
+[ ] Extraiu o ZIP
+[ ] Acessou Cloudflare
+[ ] Criou o projeto Pages
+[ ] Fez upload do index.html
+[ ] Testou o acesso
+[ ] Sistema funcionando!
+
+==========================================
+
+BOA SORTE! 🎯
+O sistema está pronto para uso!

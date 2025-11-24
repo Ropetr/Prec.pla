@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner de Notas Fiscais - PLANAC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ================================================
+           TEMA PLANAC - Scanner de Notas Fiscais
+           ================================================ */
+        :root {
+            /* Cores Primárias PLANAC */
+            --planac-red-50: #fef2f2;
+            --planac-red-100: #fee2e2;
+            --planac-red-200: #fecaca;
+            --planac-red-300: #fca5a5;
+            --planac-red-400: #f87171;
+            --planac-red-500: #ef4444;
+            --planac-red-600: #dc2626;
+            --planac-red-700: #b91c1c;
+            --planac-red-800: #991b1b;
+            --planac-red-900: #7f1d1d;
+            
+            /* Cor principal da marca */
+            --planac-primary: #e53e3e;
+            --planac-primary-dark: #dc2626;
+            --planac-primary-light: #ef4444;
+            
+            /* Escala de Cinzas PLANAC */
+            --planac-gray-50: #fafafa;
+            --planac-gray-100: #f5f5f5;
+            --planac-gray-200: #e5e5e5;
+            --planac-gray-300: #d4d4d4;
+            --planac-gray-400: #a3a3a3;
+            --planac-gray-500: #737373;
+            --planac-gray-600: #525252;
+            --planac-gray-700: #404040;
+            --planac-gray-800: #262626;
+            --planac-gray-900: #171717;
+            
+            /* Cores Secundárias */
+            --planac-secondary: #666666;
+            --planac-accent: #fbbf24;
+            --planac-success: #10b981;
+            --planac-warning: #f59e0b;
+            --planac-danger: #ef4444;
+            --planac-info: #3b82f6;
+            
+            /* Gradientes Vitral PLANAC */
+            --planac-gradient-primary: linear-gradient(135deg, #e53e3e 0%, #dc2626 50%, #991b1b 100%);
+            --planac-gradient-secondary: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --planac-gradient-accent: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            
+            /* Efeitos Glass/Vitral */
+            --planac-glass-bg: rgba(255, 255, 255, 0.1);
+            --planac-glass-border: rgba(255, 255, 255, 0.2);
+            --planac-blur: 20px;
+            --planac-blur-light: 12px;
+            
+            /* Sombras PLANAC */
+            --planac-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --planac-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --planac-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --planac-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --planac-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --planac-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --planac-shadow-red: 0 10px 40px rgba(229, 62, 62, 0.3);
+            --planac-shadow-red-lg: 0 20px 60px rgba(229, 62, 62, 0.4);
+            
+            /* Espaçamento */
+            --planac-spacing-xs: 0.25rem;
+            --planac-spacing-sm: 0.5rem;
+            --planac-spacing-md: 1rem;
+            --planac-spacing-lg: 1.5rem;
+            --planac-spacing-xl: 2rem;
+            --planac-spacing-2xl: 3rem;
+            
+            /* Border Radius */
+            --planac-radius-sm: 0.25rem;
+            --planac-radius-md: 0.5rem;
+            --planac-radius-lg: 0.75rem;
+            --planac-radius-xl: 1rem;
+            --planac-radius-2xl: 1.5rem;
+            --planac-radius-full: 9999px;
+            
+            /* Transições */
+            --planac-transition-fast: 150ms ease;
+            --planac-transition: 300ms ease;
+            --planac-transition-slow: 500ms ease;
+            
+            /* Tipografia */
+            --planac-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--planac-font-sans);
+            background: var(--planac-gradient-primary);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header PLANAC com Gradiente */
+        .header {
+            background: white;
+            border-radius: var(--planac-radius-xl);
+            padding: var(--planac-spacing-xl);
+            margin-bottom: var(--planac-spacing-xl);
+            box-shadow: var(--planac-shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--planac-gradient-primary);
+        }
+
+        .header h1 {
+            background: var(--planac-gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            margin-bottom: var(--planac-spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--planac-spacing-md);
+            font-weight: 700;
+        }
+
+        .header p {
+            color: var(--planac-gray-600);
+            font-size: 1.1rem;
+        }
+
+        /* Tabs PLANAC */
+        .tabs {
+            display: flex;
+            gap: var(--planac-spacing-sm);
+            margin-bottom: var(--planac-spacing-xl);
+            background: white;
+            padding: var(--planac-spacing-sm);
+            border-radius: var(--planac-radius-xl);
+            box-shadow: var(--planac-shadow-md);
+        }
+
+        .tab {
+            flex: 1;
+            padding: var(--planac-spacing-md) var(--planac-spacing-lg);
+            background: var(--planac-gray-100);
+            border: none;
+            border-radius: var(--planac-radius-lg);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--planac-gray-700);
+            transition: all var(--planac-transition);
+            font-family: var(--planac-font-sans);
+        }
+
+        .tab:hover {
+            background: var(--planac-gray-200);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: var(--planac-gradient-primary);
+            color: white;
+            box-shadow: var(--planac-shadow-red);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards PLANAC */
+        .card {
+            background: white;
+            border-radius: var(--planac-radius-xl);
+            padding: var(--planac-spacing-lg);
+            margin-bottom: var(--planac-spacing-md);
+            box-shadow: var(--planac-shadow-md);
+            transition: all var(--planac-transition);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--planac-shadow-xl);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--planac-gray-800);
+            margin-bottom: var(--planac-spacing-md);
+            padding-bottom: var(--planac-spacing-sm);
+            border-bottom: 2px solid var(--planac-gray-200);
+            font-weight: 700;
+        }
+
+        /* Email Grid */
+        .email-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--planac-spacing-lg);
+            margin-bottom: var(--planac-spacing-xl);
+        }
+
+        .email-card {
+            background: var(--planac-gray-50);
+            border: 2px solid var(--planac-gray-200);
+            border-radius: var(--planac-radius-lg);
+            padding: var(--planac-spacing-lg);
+            position: relative;
+            transition: all var(--planac-transition);
+        }
+
+        .email-card:hover {
+            border-color: var(--planac-primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--planac-shadow-red);
+        }
+
+        .email-card.active {
+            background: linear-gradient(135deg, rgba(229, 62, 62, 0.05), rgba(229, 62, 62, 0.1));
+            border-color: var(--planac-primary);
+        }
+
+        .email-type {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: var(--planac-spacing-xs) var(--planac-spacing-sm);
+            border-radius: var(--planac-radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .email-type.entrada {
+            background: #d1fae5;
+            color: var(--planac-success);
+            border: 1px solid #a7f3d0;
+        }
+
+        .email-type.saida {
+            background: #dbeafe;
+            color: var(--planac-info);
+            border: 1px solid #bfdbfe;
+        }
+
+        .email-address {
+            font-size: 1.1rem;
+            color: var(--planac-gray-800);
+            margin-bottom: var(--planac-spacing-sm);
+            font-weight: 600;
+        }
+
+        .email-status {
+            display: flex;
+            align-items: center;
+            gap: var(--planac-spacing-sm);
+            margin-top: var(--planac-spacing-sm);
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.active {
+            background: var(--planac-success);
+        }
+
+        .status-indicator.inactive {
+            background: var(--planac-gray-400);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Scanner Control */
+        .scanner-control {
+            display: flex;
+            gap: var(--planac-spacing-lg);
+            align-items: center;
+            padding: var(--planac-spacing-lg);
+            background: var(--planac-gradient-primary);
+            border-radius: var(--planac-radius-lg);
+            color: white;
+            box-shadow: var(--planac-shadow-red);
+        }
+
+        .scanner-button {
+            padding: var(--planac-spacing-sm) var(--planac-spacing-xl);
+            background: white;
+            color: var(--planac-primary);
+            border: none;
+            border-radius: var(--planac-radius-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--planac-transition);
+        }
+
+        .scanner-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--planac-shadow-lg);
+        }
+
+        .scanner-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .scanner-status {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        /* Stats Grid PLANAC */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--planac-spacing-lg);
+            margin: var(--planac-spacing-xl) 0;
+        }
+
+        .stat-card {
+            background: var(--planac-gradient-primary);
+            color: white;
+            padding: var(--planac-spacing-lg);
+            border-radius: var(--planac-radius-xl);
+            text-align: center;
+            box-shadow: var(--planac-shadow-red);
+            transition: all var(--planac-transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            pointer-events: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--planac-shadow-red-lg);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--planac-spacing-xs);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* Invoice Table */
+        .table-container {
+            overflow-x: auto;
+            margin-top: var(--planac-spacing-lg);
+            background: white;
+            border-radius: var(--planac-radius-lg);
+            box-shadow: var(--planac-shadow-md);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--planac-gray-100);
+            color: var(--planac-gray-800);
+            padding: var(--planac-spacing-md);
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--planac-gray-300);
+        }
+
+        td {
+            padding: var(--planac-spacing-md);
+            border-bottom: 1px solid var(--planac-gray-200);
+        }
+
+        tr:hover {
+            background: var(--planac-gray-50);
+        }
+
+        /* Badges PLANAC */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--planac-spacing-xs) var(--planac-spacing-sm);
+            border-radius: var(--planac-radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge.entrada {
+            background: #d1fae5;
+            color: var(--planac-success);
+            border: 1px solid #a7f3d0;
+        }
+
+        .badge.saida {
+            background: #dbeafe;
+            color: var(--planac-info);
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed var(--planac-gray-300);
+            border-radius: var(--planac-radius-lg);
+            padding: var(--planac-spacing-2xl);
+            text-align: center;
+            transition: all var(--planac-transition);
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--planac-primary);
+            background: rgba(229, 62, 62, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--planac-primary);
+            background: rgba(229, 62, 62, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--planac-gray-400);
+            margin-bottom: var(--planac-spacing-lg);
+        }
+
+        /* Processing Log */
+        .log-container {
+            background: var(--planac-gray-900);
+            color: var(--planac-gray-100);
+            padding: var(--planac-spacing-lg);
+            border-radius: var(--planac-radius-lg);
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .log-entry {
+            margin-bottom: var(--planac-spacing-sm);
+            padding: var(--planac-spacing-xs) var(--planac-spacing-sm);
+            border-left: 3px solid var(--planac-gray-600);
+        }
+
+        .log-entry.success {
+            border-color: var(--planac-success);
+            color: var(--planac-success);
+        }
+
+        .log-entry.error {
+            border-color: var(--planac-danger);
+            color: var(--planac-danger);
+        }
+
+        .log-entry.info {
+            border-color: var(--planac-info);
+            color: var(--planac-info);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Buttons PLANAC */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--planac-spacing-sm) var(--planac-spacing-lg);
+            border-radius: var(--planac-radius-lg);
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all var(--planac-transition);
+            position: relative;
+            overflow: hidden;
+            font-family: var(--planac-font-sans);
+        }
+
+        .btn-primary {
+            background: var(--planac-gradient-primary);
+            color: white;
+            box-shadow: var(--planac-shadow-red), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--planac-shadow-red-lg),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--planac-gray-600);
+            color: white;
+            box-shadow: var(--planac-shadow-md);
+        }
+
+        .btn-secondary:hover {
+            background: var(--planac-gray-700);
+            transform: translateY(-2px);
+            box-shadow: var(--planac-shadow-lg);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--planac-success), #059669);
+            color: white;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--planac-radius-xl);
+            padding: var(--planac-spacing-xl);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--planac-shadow-2xl);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--planac-spacing-lg);
+            padding-bottom: var(--planac-spacing-sm);
+            border-bottom: 2px solid var(--planac-gray-200);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--planac-gray-800);
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--planac-gray-500);
+            cursor: pointer;
+            transition: all var(--planac-transition);
+        }
+
+        .close-btn:hover {
+            color: var(--planac-primary);
+            transform: scale(1.2);
+        }
+
+        /* Filters Section */
+        .filters-section {
+            display: flex;
+            gap: var(--planac-spacing-md);
+            margin-bottom: var(--planac-spacing-lg);
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header com Gradiente PLANAC -->
+        <div class="header">
+            <h1>
+                📧 Scanner de Notas Fiscais PLANAC
+            </h1>
+            <p>Sistema automático de importação e processamento de XMLs</p>
+        </div>
+
+        <!-- Tabs PLANAC -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('scanner')">
+                🔍 Scanner de Emails
+            </button>
+            <button class="tab" onclick="switchTab('upload')">
+                📤 Upload Manual
+            </button>
+            <button class="tab" onclick="switchTab('invoices')">
+                📋 Notas Processadas
+            </button>
+            <button class="tab" onclick="switchTab('config')">
+                ⚙️ Configurações
+            </button>
+        </div>
+
+        <!-- Scanner Section -->
+        <div id="scanner" class="content-section active">
+            <div class="card">
+                <h2 class="card-title">📧 Emails Monitorados</h2>
+                
+                <div class="email-grid">
+                    <!-- Email de Entrada 1 -->
+                    <div class="email-card active">
+                        <span class="email-type entrada">ENTRADA</span>
+                        <div class="email-address"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b9dfd0d7d8d7dadcd0cbd6f9c9d5d8d7d8daddd0cfd0cad6cbd0d8ca97dad6d497dbcb">[email&#160;protected]</a></div>
+                        <div class="email-status">
+                            <span class="status-indicator active"></span>
+                            <span>Ativo - Última verificação: há 5 min</span>
+                        </div>
+                    </div>
+
+                    <!-- Email de Entrada 2 -->
+                    <div class="email-card active">
+                        <span class="email-type entrada">ENTRADA</span>
+                        <div class="email-address"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f69b97849599b6869a97989795929f809f8599849f9785d895999bd89484">[email&#160;protected]</a></div>
+                        <div class="email-status">
+                            <span class="status-indicator active"></span>
+                            <span>Ativo - Última verificação: há 8 min</span>
+                        </div>
+                    </div>
+
+                    <!-- Email de Entrada 3 -->
+                    <div class="email-card active">
+                        <span class="email-type entrada">ENTRADA</span>
+                        <div class="email-address"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="45372a21372c222a053529242b2426212c332c362a372c24366b262a286b2737">[email&#160;protected]</a></div>
+                        <div class="email-status">
+                            <span class="status-indicator active"></span>
+                            <span>Ativo - Última verificação: há 3 min</span>
+                        </div>
+                    </div>
+
+                    <!-- Email de Saída -->
+                    <div class="email-card active">
+                        <span class="email-type saida">SAÍDA</span>
+                        <div class="email-address"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fc8c909d929d9f9293889d8f999e93909988938fbc8c909d929d9f98958a958f938e959d8fd29f9391d29e8e">[email&#160;protected]</a></div>
+                        <div class="email-status">
+                            <span class="status-indicator active"></span>
+                            <span>Ativo - Última verificação: há 10 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scanner Control -->
+                <div class="scanner-control">
+                    <button class="scanner-button" onclick="startScanner()">
+                        🚀 Iniciar Scanner
+                    </button>
+                    <div class="scanner-status" id="scannerStatus">
+                        Status: Aguardando comando...
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalScanned">0</div>
+                        <div class="stat-label">Emails Verificados</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--planac-success), #059669);">
+                        <div class="stat-value" id="notasEntrada">0</div>
+                        <div class="stat-label">Notas de Entrada</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--planac-info), #3182CE);">
+                        <div class="stat-value" id="notasSaida">0</div>
+                        <div class="stat-label">Notas de Saída</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, var(--planac-warning), #D69E2E);">
+                        <div class="stat-value" id="pendentes">0</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+                </div>
+
+                <!-- Processing Log -->
+                <div class="card">
+                    <h3 class="card-title">📊 Log de Processamento</h3>
+                    <div class="log-container" id="logContainer">
+                        <div class="log-entry info">Sistema inicializado com tema PLANAC...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div id="upload" class="content-section">
+            <div class="card">
+                <h2 class="card-title">📤 Upload Manual de XMLs</h2>
+                
+                <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <div class="upload-icon">📁</div>
+                    <h3>Arraste arquivos XML aqui</h3>
+                    <p style="color: var(--planac-gray-600); margin: 10px 0;">ou</p>
+                    <input type="file" id="fileInput" multiple accept=".xml" style="display: none;" onchange="handleFiles(this.files)">
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Selecionar Arquivos
+                    </button>
+                </div>
+
+                <!-- Upload Queue -->
+                <div id="uploadQueue" style="margin-top: var(--planac-spacing-xl); display: none;">
+                    <h3 style="margin-bottom: var(--planac-spacing-lg);">📋 Fila de Processamento</h3>
+                    <div id="queueList"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoices Section -->
+        <div id="invoices" class="content-section">
+            <div class="card">
+                <h2 class="card-title">📋 Notas Fiscais Processadas</h2>
+                
+                <!-- Filters -->
+                <div class="filters-section">
+                    <select class="btn btn-secondary" id="filterType">
+                        <option value="">Todos os Tipos</option>
+                        <option value="entrada">Entrada</option>
+                        <option value="saida">Saída</option>
+                    </select>
+                    <input type="date" class="btn btn-secondary" id="filterDateStart">
+                    <input type="date" class="btn btn-secondary" id="filterDateEnd">
+                    <button class="btn btn-primary" onclick="filterInvoices()">
+                        🔍 Filtrar
+                    </button>
+                </div>
+
+                <!-- Table -->
+                <div class="table-container">
+                    <table id="invoicesTable">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Tipo</th>
+                                <th>Data</th>
+                                <th>Fornecedor/Cliente</th>
+                                <th>CFOP</th>
+                                <th>Valor Total</th>
+                                <th>ICMS</th>
+                                <th>ST</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoicesList">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Config Section -->
+        <div id="config" class="content-section">
+            <div class="card">
+                <h2 class="card-title">⚙️ Configurações do Sistema</h2>
+                
+                <!-- Email Settings -->
+                <div style="margin-bottom: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-md);">📧 Configurações de Email (Hostinger)</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--planac-spacing-lg);">
+                        <div>
+                            <label style="display: block; margin-bottom: var(--planac-spacing-xs); font-weight: 600; color: var(--planac-gray-700);">Servidor IMAP:</label>
+                            <input type="text" value="imap.hostinger.com" class="btn btn-secondary" style="width: 100%;" readonly>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: var(--planac-spacing-xs); font-weight: 600; color: var(--planac-gray-700);">Porta IMAP:</label>
+                            <input type="text" value="993" class="btn btn-secondary" style="width: 100%;" readonly>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: var(--planac-spacing-xs); font-weight: 600; color: var(--planac-gray-700);">Servidor SMTP:</label>
+                            <input type="text" value="smtp.hostinger.com" class="btn btn-secondary" style="width: 100%;" readonly>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: var(--planac-spacing-xs); font-weight: 600; color: var(--planac-gray-700);">Porta SMTP:</label>
+                            <input type="text" value="465" class="btn btn-secondary" style="width: 100%;" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scanner Settings -->
+                <div style="margin-bottom: var(--planac-spacing-xl);">
+                    <h3 style="margin-bottom: var(--planac-spacing-md);">⏰ Configurações do Scanner</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--planac-spacing-lg);">
+                        <div>
+                            <label style="display: block; margin-bottom: var(--planac-spacing-xs); font-weight: 600; color: var(--planac-gray-700);">Intervalo de Verificação (minutos):</label>
+                            <input type="number" value="10" class="btn btn-secondary" style="width: 100%;" id="scanInterval">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: var(--planac-spacing-xs); font-weight: 600; color: var(--planac-gray-700);">Dias para Buscar:</label>
+                            <input type="number" value="7" class="btn btn-secondary" style="width: 100%;" id="daysToSearch">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" onclick="saveConfig()">
+                    💾 Salvar Configurações
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Detail Modal -->
+    <div class="modal" id="invoiceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detalhes da Nota Fiscal</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Configuration
+        const API_BASE = '/api';
+        const CLOUDFLARE_DB_ID = '3843b4b1-8bf8-4b01-8b5d-24bc26669ecf';
+        
+        // State
+        let scannerInterval = null;
+        let stats = {
+            totalScanned: 0,
+            notasEntrada: 0,
+            notasSaida: 0,
+            pendentes: 0
+        };
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            
+            // Mark tab as active
+            event.target.classList.add('active');
+            
+            // Load data if needed
+            if (tabName === 'invoices') {
+                loadInvoices();
+            }
+        }
+
+        // Scanner Functions
+        async function startScanner() {
+            const btn = event.target;
+            const statusEl = document.getElementById('scannerStatus');
+            
+            if (scannerInterval) {
+                // Stop scanner
+                clearInterval(scannerInterval);
+                scannerInterval = null;
+                btn.textContent = '🚀 Iniciar Scanner';
+                statusEl.textContent = 'Status: Scanner parado';
+                addLog('Scanner parado pelo usuário', 'info');
+                return;
+            }
+            
+            // Start scanner
+            btn.textContent = '⏸️ Parar Scanner';
+            statusEl.innerHTML = 'Status: Escaneando... <span class="spinner"></span>';
+            addLog('Iniciando scanner de emails...', 'success');
+            
+            // Initial scan
+            await scanEmails();
+            
+            // Set interval (default 10 minutes)
+            const interval = parseInt(document.getElementById('scanInterval')?.value || 10) * 60 * 1000;
+            scannerInterval = setInterval(scanEmails, interval);
+        }
+
+        async function scanEmails() {
+            addLog('Verificando emails...', 'info');
+            
+            const emails = [
+                { address: 'financeiro@planacdivisorias.com.br', type: 'entrada' },
+                { address: 'marco@planacdivisorias.com.br', type: 'entrada' },
+                { address: 'rodrigo@planacdivisorias.com.br', type: 'entrada' },
+                { address: 'planacnotaseboletos@planacdivisorias.com.br', type: 'saida' }
+            ];
+            
+            for (const email of emails) {
+                addLog(`Conectando a ${email.address}...`, 'info');
+                
+                // Simulate email scanning (in production, this would connect to IMAP)
+                await simulateEmailScan(email);
+                
+                stats.totalScanned++;
+                updateStats();
+            }
+            
+            addLog(`Scan completo! ${stats.totalScanned} emails verificados`, 'success');
+        }
+
+        async function simulateEmailScan(email) {
+            // This is where you'd implement actual IMAP connection
+            // For now, we'll simulate finding XMLs
+            
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const found = Math.random() > 0.7;
+                    if (found) {
+                        const count = Math.floor(Math.random() * 3) + 1;
+                        addLog(`📎 ${count} XML(s) encontrado(s) em ${email.address}`, 'success');
+                        
+                        if (email.type === 'entrada') {
+                            stats.notasEntrada += count;
+                        } else {
+                            stats.notasSaida += count;
+                        }
+                    } else {
+                        addLog(`Nenhum XML novo em ${email.address}`, 'info');
+                    }
+                    resolve();
+                }, 500);
+            });
+        }
+
+        // Upload Functions
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            const xmlFiles = Array.from(files).filter(file => file.name.endsWith('.xml'));
+            
+            if (xmlFiles.length === 0) {
+                alert('Por favor, selecione apenas arquivos XML');
+                return;
+            }
+            
+            document.getElementById('uploadQueue').style.display = 'block';
+            const queueList = document.getElementById('queueList');
+            queueList.innerHTML = '';
+            
+            xmlFiles.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'upload-item';
+                item.style.cssText = `padding: var(--planac-spacing-md); background: var(--planac-gray-100); margin-bottom: var(--planac-spacing-sm); border-radius: var(--planac-radius-lg); display: flex; justify-content: space-between; align-items: center;`;
+                item.innerHTML = `
+                    <span>${file.name}</span>
+                    <span class="badge" style="background: var(--planac-warning); color: white;">Processando...</span>
+                `;
+                queueList.appendChild(item);
+                
+                // Process file
+                processXMLFile(file, item);
+            });
+        }
+
+        async function processXMLFile(file, itemElement) {
+            const reader = new FileReader();
+            
+            reader.onload = async function(e) {
+                try {
+                    const xmlContent = e.target.result;
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+                    
+                    // Extract NFe data
+                    const nfeData = extractNFeData(xmlDoc);
+                    
+                    // Save to database
+                    await saveInvoice(nfeData);
+                    
+                    // Update UI
+                    itemElement.querySelector('.badge').textContent = 'Processado ✓';
+                    itemElement.querySelector('.badge').style.background = 'var(--planac-success)';
+                    
+                    if (nfeData.type === 'entrada') {
+                        stats.notasEntrada++;
+                    } else {
+                        stats.notasSaida++;
+                    }
+                    updateStats();
+                    
+                    addLog(`✓ ${file.name} processado com sucesso`, 'success');
+                } catch (error) {
+                    itemElement.querySelector('.badge').textContent = 'Erro ✗';
+                    itemElement.querySelector('.badge').style.background = 'var(--planac-danger)';
+                    addLog(`✗ Erro ao processar ${file.name}: ${error.message}`, 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function extractNFeData(xmlDoc) {
+            // Extract key NFe fields
+            const getXMLValue = (tag) => {
+                const element = xmlDoc.getElementsByTagName(tag)[0];
+                return element ? element.textContent : '';
+            };
+            
+            const nNF = getXMLValue('nNF');
+            const dhEmi = getXMLValue('dhEmi');
+            const xNome = xmlDoc.getElementsByTagName('emit')[0]?.getElementsByTagName('xNome')[0]?.textContent || 
+                         xmlDoc.getElementsByTagName('dest')[0]?.getElementsByTagName('xNome')[0]?.textContent || '';
+            const vNF = getXMLValue('vNF');
+            const vICMS = getXMLValue('vICMS');
+            const vST = getXMLValue('vST');
+            const natOp = getXMLValue('natOp');
+            const CFOP = xmlDoc.getElementsByTagName('prod')[0]?.getElementsByTagName('CFOP')[0]?.textContent || '';
+            
+            // Determine if entrada ou saida based on CFOP
+            const type = CFOP.startsWith('1') || CFOP.startsWith('2') ? 'entrada' : 'saida';
+            
+            return {
+                nNF,
+                dhEmi,
+                xNome,
+                vNF,
+                vICMS,
+                vST,
+                natOp,
+                CFOP,
+                type
+            };
+        }
+
+        async function saveInvoice(nfeData) {
+            // In production, this would save to Cloudflare D1
+            console.log('Saving invoice:', nfeData);
+            
+            // For now, just add to local storage
+            let invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+            invoices.push({
+                ...nfeData,
+                id: Date.now(),
+                processedAt: new Date().toISOString()
+            });
+            localStorage.setItem('invoices', JSON.stringify(invoices));
+        }
+
+        // Invoice Management
+        function loadInvoices() {
+            const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+            const tbody = document.getElementById('invoicesList');
+            
+            tbody.innerHTML = '';
+            
+            invoices.forEach(invoice => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${invoice.nNF}</td>
+                    <td><span class="badge ${invoice.type}">${invoice.type.toUpperCase()}</span></td>
+                    <td>${new Date(invoice.dhEmi).toLocaleDateString('pt-BR')}</td>
+                    <td>${invoice.xNome}</td>
+                    <td>${invoice.CFOP}</td>
+                    <td>R$ ${parseFloat(invoice.vNF).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${parseFloat(invoice.vICMS || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${parseFloat(invoice.vST || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="viewInvoice(${invoice.id})" style="padding: var(--planac-spacing-xs) var(--planac-spacing-sm); font-size: 0.9rem;">
+                            Ver
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterInvoices() {
+            const type = document.getElementById('filterType').value;
+            const startDate = document.getElementById('filterDateStart').value;
+            const endDate = document.getElementById('filterDateEnd').value;
+            
+            let invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+            
+            if (type) {
+                invoices = invoices.filter(inv => inv.type === type);
+            }
+            
+            if (startDate) {
+                invoices = invoices.filter(inv => new Date(inv.dhEmi) >= new Date(startDate));
+            }
+            
+            if (endDate) {
+                invoices = invoices.filter(inv => new Date(inv.dhEmi) <= new Date(endDate));
+            }
+            
+            // Update table with filtered results
+            const tbody = document.getElementById('invoicesList');
+            tbody.innerHTML = '';
+            
+            invoices.forEach(invoice => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${invoice.nNF}</td>
+                    <td><span class="badge ${invoice.type}">${invoice.type.toUpperCase()}</span></td>
+                    <td>${new Date(invoice.dhEmi).toLocaleDateString('pt-BR')}</td>
+                    <td>${invoice.xNome}</td>
+                    <td>${invoice.CFOP}</td>
+                    <td>R$ ${parseFloat(invoice.vNF).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${parseFloat(invoice.vICMS || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${parseFloat(invoice.vST || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>
+                        <button class="btn btn-primary" onclick="viewInvoice(${invoice.id})" style="padding: var(--planac-spacing-xs) var(--planac-spacing-sm); font-size: 0.9rem;">
+                            Ver
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function viewInvoice(id) {
+            const invoices = JSON.parse(localStorage.getItem('invoices') || '[]');
+            const invoice = invoices.find(inv => inv.id === id);
+            
+            if (!invoice) return;
+            
+            document.getElementById('modalBody').innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--planac-spacing-lg);">
+                    <div>
+                        <strong>Número:</strong> ${invoice.nNF}
+                    </div>
+                    <div>
+                        <strong>Tipo:</strong> ${invoice.type.toUpperCase()}
+                    </div>
+                    <div>
+                        <strong>Data Emissão:</strong> ${new Date(invoice.dhEmi).toLocaleString('pt-BR')}
+                    </div>
+                    <div>
+                        <strong>CFOP:</strong> ${invoice.CFOP}
+                    </div>
+                    <div>
+                        <strong>Natureza:</strong> ${invoice.natOp}
+                    </div>
+                    <div>
+                        <strong>Empresa:</strong> ${invoice.xNome}
+                    </div>
+                    <div>
+                        <strong>Valor Total:</strong> R$ ${parseFloat(invoice.vNF).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                    </div>
+                    <div>
+                        <strong>ICMS:</strong> R$ ${parseFloat(invoice.vICMS || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                    </div>
+                    <div>
+                        <strong>ST:</strong> R$ ${parseFloat(invoice.vST || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                    </div>
+                    <div>
+                        <strong>Processado em:</strong> ${new Date(invoice.processedAt).toLocaleString('pt-BR')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('invoiceModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('invoiceModal').classList.remove('active');
+        }
+
+        // Utility Functions
+        function addLog(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString('pt-BR')}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function updateStats() {
+            document.getElementById('totalScanned').textContent = stats.totalScanned;
+            document.getElementById('notasEntrada').textContent = stats.notasEntrada;
+            document.getElementById('notasSaida').textContent = stats.notasSaida;
+            document.getElementById('pendentes').textContent = stats.pendentes;
+        }
+
+        function saveConfig() {
+            const scanInterval = document.getElementById('scanInterval').value;
+            const daysToSearch = document.getElementById('daysToSearch').value;
+            
+            localStorage.setItem('scannerConfig', JSON.stringify({
+                scanInterval,
+                daysToSearch
+            }));
+            
+            alert('Configurações salvas com sucesso!');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved config
+            const config = JSON.parse(localStorage.getItem('scannerConfig') || '{}');
+            if (config.scanInterval) document.getElementById('scanInterval').value = config.scanInterval;
+            if (config.daysToSearch) document.getElementById('daysToSearch').value = config.daysToSearch;
+            
+            // Update initial stats
+            updateStats();
+            
+            // Load invoices count from localStorage
+            

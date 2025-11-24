@@ -1,0 +1,30 @@
+{
+  "name": "planac-sistema-precificacao",
+  "version": "2.0.0",
+  "description": "Sistema de Precificação PLANAC - Cálculo tributário e gestão de produtos",
+  "main": "index.html",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler publish",
+    "deploy-pages": "echo 'Faça upload do index.html no Cloudflare Pages'",
+    "test": "echo \"No tests configured\""
+  },
+  "keywords": [
+    "planac",
+    "precificacao",
+    "tributario",
+    "st",
+    "icms",
+    "difal"
+  ],
+  "author": "PLANAC Distribuidora",
+  "license": "Proprietary",
+  "dependencies": {},
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seu-usuario/planac-sistema.git"
+  }
+}

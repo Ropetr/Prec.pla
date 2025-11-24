@@ -1,0 +1,1297 @@
+/**
+ * ================================================
+ * TEMA PLANAC - Sistema de Design Completo
+ * ================================================
+ * Baseado no padrÃ£o CalcPro com identidade PLANAC
+ * VersÃ£o 1.0.0
+ * ================================================
+ */
+
+/* ================================================
+   1. VARIÃVEIS DE TEMA - PLANAC
+   ================================================ */
+:root {
+  /* Cores PrimÃ¡rias PLANAC */
+  --planac-red-50: #fef2f2;
+  --planac-red-100: #fee2e2;
+  --planac-red-200: #fecaca;
+  --planac-red-300: #fca5a5;
+  --planac-red-400: #f87171;
+  --planac-red-500: #ef4444;
+  --planac-red-600: #dc2626;
+  --planac-red-700: #b91c1c;
+  --planac-red-800: #991b1b;
+  --planac-red-900: #7f1d1d;
+  
+  /* Cor principal da marca */
+  --planac-primary: #e53e3e;
+  --planac-primary-dark: #dc2626;
+  --planac-primary-light: #ef4444;
+  
+  /* Escala de Cinzas PLANAC */
+  --planac-gray-50: #fafafa;
+  --planac-gray-100: #f5f5f5;
+  --planac-gray-200: #e5e5e5;
+  --planac-gray-300: #d4d4d4;
+  --planac-gray-400: #a3a3a3;
+  --planac-gray-500: #737373;
+  --planac-gray-600: #525252;
+  --planac-gray-700: #404040;
+  --planac-gray-800: #262626;
+  --planac-gray-900: #171717;
+  
+  /* Cores SecundÃ¡rias */
+  --planac-secondary: #666666;
+  --planac-accent: #fbbf24;
+  --planac-success: #10b981;
+  --planac-warning: #f59e0b;
+  --planac-danger: #ef4444;
+  --planac-info: #3b82f6;
+  
+  /* Gradientes Vitral PLANAC */
+  --planac-gradient-primary: linear-gradient(135deg, #e53e3e 0%, #dc2626 50%, #991b1b 100%);
+  --planac-gradient-secondary: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --planac-gradient-accent: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --planac-gradient-dark: linear-gradient(135deg, #404040 0%, #262626 100%);
+  --planac-gradient-light: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+  
+  /* Efeitos Glass/Vitral */
+  --planac-glass-bg: rgba(255, 255, 255, 0.1);
+  --planac-glass-bg-dark: rgba(0, 0, 0, 0.1);
+  --planac-glass-border: rgba(255, 255, 255, 0.2);
+  --planac-glass-border-dark: rgba(0, 0, 0, 0.2);
+  --planac-blur: 20px;
+  --planac-blur-light: 12px;
+  --planac-blur-heavy: 30px;
+  
+  /* Sombras PLANAC */
+  --planac-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --planac-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --planac-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --planac-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --planac-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --planac-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --planac-shadow-red: 0 10px 40px rgba(229, 62, 62, 0.3);
+  --planac-shadow-red-lg: 0 20px 60px rgba(229, 62, 62, 0.4);
+  
+  /* EspaÃ§amento */
+  --planac-spacing-xs: 0.25rem;
+  --planac-spacing-sm: 0.5rem;
+  --planac-spacing-md: 1rem;
+  --planac-spacing-lg: 1.5rem;
+  --planac-spacing-xl: 2rem;
+  --planac-spacing-2xl: 3rem;
+  --planac-spacing-3xl: 4rem;
+  
+  /* Border Radius */
+  --planac-radius-sm: 0.25rem;
+  --planac-radius-md: 0.5rem;
+  --planac-radius-lg: 0.75rem;
+  --planac-radius-xl: 1rem;
+  --planac-radius-2xl: 1.5rem;
+  --planac-radius-full: 9999px;
+  
+  /* TransiÃ§Ãµes */
+  --planac-transition-fast: 150ms ease;
+  --planac-transition: 300ms ease;
+  --planac-transition-slow: 500ms ease;
+  
+  /* Tipografia */
+  --planac-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Arial', sans-serif;
+  --planac-font-mono: 'Fira Code', 'Consolas', monospace;
+  
+  /* Z-Index */
+  --planac-z-base: 0;
+  --planac-z-dropdown: 10;
+  --planac-z-sticky: 20;
+  --planac-z-overlay: 30;
+  --planac-z-modal: 40;
+  --planac-z-tooltip: 50;
+}
+
+/* ================================================
+   2. RESET E BASE
+   ================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--planac-font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  color: var(--planac-gray-800);
+  background: white;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ================================================
+   3. TIPOGRAFIA PLANAC
+   ================================================ */
+.planac-h1, .planac-title-xl {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--planac-gray-900);
+  margin-bottom: var(--planac-spacing-lg);
+}
+
+.planac-h2, .planac-title-lg {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--planac-gray-900);
+  margin-bottom: var(--planac-spacing-md);
+}
+
+.planac-h3, .planac-title-md {
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--planac-gray-800);
+  margin-bottom: var(--planac-spacing-md);
+}
+
+.planac-h4, .planac-title-sm {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--planac-gray-800);
+  margin-bottom: var(--planac-spacing-sm);
+}
+
+.planac-h5, .planac-title-xs {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--planac-gray-700);
+  margin-bottom: var(--planac-spacing-sm);
+}
+
+.planac-text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.planac-text-md {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.planac-text-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.planac-text-xs {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* Texto com gradiente PLANAC */
+.planac-gradient-text {
+  background: var(--planac-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* ================================================
+   4. BOTÃ•ES PLANAC
+   ================================================ */
+.planac-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--planac-spacing-sm) var(--planac-spacing-lg);
+  border-radius: var(--planac-radius-lg);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: all var(--planac-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* BotÃ£o PrimÃ¡rio */
+.planac-btn-primary {
+  background: var(--planac-gradient-primary);
+  color: white;
+  box-shadow: var(--planac-shadow-red), 
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.planac-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--planac-shadow-red-lg),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.planac-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* BotÃ£o SecundÃ¡rio */
+.planac-btn-secondary {
+  background: var(--planac-gray-600);
+  color: white;
+  box-shadow: var(--planac-shadow-md);
+}
+
+.planac-btn-secondary:hover {
+  background: var(--planac-gray-700);
+  transform: translateY(-2px);
+  box-shadow: var(--planac-shadow-lg);
+}
+
+/* BotÃ£o Glass/Vitral */
+.planac-btn-glass {
+  background: var(--planac-glass-bg);
+  backdrop-filter: blur(var(--planac-blur));
+  border: 1px solid var(--planac-glass-border);
+  color: var(--planac-primary);
+  box-shadow: var(--planac-shadow);
+}
+
+.planac-btn-glass:hover {
+  background: rgba(229, 62, 62, 0.1);
+  border-color: rgba(229, 62, 62, 0.3);
+  transform: translateY(-2px);
+  box-shadow: var(--planac-shadow-md);
+}
+
+/* BotÃ£o Outline */
+.planac-btn-outline {
+  background: transparent;
+  border: 2px solid var(--planac-primary);
+  color: var(--planac-primary);
+}
+
+.planac-btn-outline:hover {
+  background: var(--planac-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--planac-shadow-red);
+}
+
+/* BotÃ£o Ghost */
+.planac-btn-ghost {
+  background: transparent;
+  color: var(--planac-gray-700);
+  box-shadow: none;
+}
+
+.planac-btn-ghost:hover {
+  background: var(--planac-gray-100);
+  color: var(--planac-primary);
+}
+
+/* Tamanhos de BotÃ£o */
+.planac-btn-sm {
+  padding: var(--planac-spacing-xs) var(--planac-spacing-md);
+  font-size: 0.875rem;
+}
+
+.planac-btn-lg {
+  padding: var(--planac-spacing-md) var(--planac-spacing-xl);
+  font-size: 1.125rem;
+}
+
+.planac-btn-xl {
+  padding: var(--planac-spacing-lg) var(--planac-spacing-2xl);
+  font-size: 1.25rem;
+}
+
+/* BotÃ£o Full Width */
+.planac-btn-block {
+  width: 100%;
+}
+
+/* BotÃ£o com Ãcone */
+.planac-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--planac-spacing-sm);
+}
+
+/* ================================================
+   5. CARDS PLANAC
+   ================================================ */
+.planac-card {
+  background: white;
+  border-radius: var(--planac-radius-xl);
+  padding: var(--planac-spacing-lg);
+  box-shadow: var(--planac-shadow-md);
+  transition: all var(--planac-transition);
+}
+
+.planac-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--planac-shadow-xl);
+}
+
+/* Card Glass/Vitral */
+.planac-card-glass {
+  background: var(--planac-glass-bg);
+  backdrop-filter: blur(var(--planac-blur));
+  border: 1px solid var(--planac-glass-border);
+  border-radius: var(--planac-radius-xl);
+  padding: var(--planac-spacing-lg);
+  box-shadow: var(--planac-shadow-lg);
+  transition: all var(--planac-transition);
+}
+
+.planac-card-glass:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--planac-shadow-2xl);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Card com Borda Vitral */
+.planac-card-vitral {
+  background: white;
+  border-radius: var(--planac-radius-xl);
+  padding: var(--planac-spacing-lg);
+  box-shadow: var(--planac-shadow-md);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--planac-transition);
+}
+
+.planac-card-vitral::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--planac-gradient-primary);
+}
+
+.planac-card-vitral:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--planac-shadow-red);
+}
+
+/* Card Gradient */
+.planac-card-gradient {
+  background: var(--planac-gradient-primary);
+  color: white;
+  border-radius: var(--planac-radius-xl);
+  padding: var(--planac-spacing-lg);
+  box-shadow: var(--planac-shadow-red);
+  transition: all var(--planac-transition);
+}
+
+.planac-card-gradient:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--planac-shadow-red-lg);
+}
+
+/* Card Header */
+.planac-card-header {
+  margin-bottom: var(--planac-spacing-md);
+  padding-bottom: var(--planac-spacing-md);
+  border-bottom: 1px solid var(--planac-gray-200);
+}
+
+.planac-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--planac-gray-900);
+  margin-bottom: var(--planac-spacing-xs);
+}
+
+.planac-card-subtitle {
+  font-size: 0.875rem;
+  color: var(--planac-gray-600);
+}
+
+/* Card Body */
+.planac-card-body {
+  color: var(--planac-gray-700);
+}
+
+/* Card Footer */
+.planac-card-footer {
+  margin-top: var(--planac-spacing-md);
+  padding-top: var(--planac-spacing-md);
+  border-top: 1px solid var(--planac-gray-200);
+}
+
+/* ================================================
+   6. FORMULÃRIOS PLANAC
+   ================================================ */
+.planac-form-group {
+  margin-bottom: var(--planac-spacing-lg);
+}
+
+.planac-label {
+  display: block;
+  margin-bottom: var(--planac-spacing-xs);
+  font-weight: 600;
+  color: var(--planac-gray-700);
+  font-size: 0.875rem;
+}
+
+.planac-input,
+.planac-textarea,
+.planac-select {
+  width: 100%;
+  padding: var(--planac-spacing-sm) var(--planac-spacing-md);
+  border: 1px solid var(--planac-gray-300);
+  border-radius: var(--planac-radius-md);
+  background: white;
+  font-size: 1rem;
+  color: var(--planac-gray-900);
+  transition: all var(--planac-transition-fast);
+}
+
+.planac-input:focus,
+.planac-textarea:focus,
+.planac-select:focus {
+  outline: none;
+  border-color: var(--planac-primary);
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+.planac-input:hover,
+.planac-textarea:hover,
+.planac-select:hover {
+  border-color: var(--planac-gray-400);
+}
+
+/* Input Glass */
+.planac-input-glass {
+  background: var(--planac-glass-bg);
+  backdrop-filter: blur(var(--planac-blur-light));
+  border: 1px solid var(--planac-glass-border);
+  color: var(--planac-gray-900);
+}
+
+.planac-input-glass:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(229, 62, 62, 0.5);
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+/* Input com erro */
+.planac-input-error {
+  border-color: var(--planac-danger);
+  background: #fef2f2;
+}
+
+.planac-input-error:focus {
+  border-color: var(--planac-danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Input com sucesso */
+.planac-input-success {
+  border-color: var(--planac-success);
+  background: #f0fdf4;
+}
+
+.planac-input-success:focus {
+  border-color: var(--planac-success);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Mensagens de validaÃ§Ã£o */
+.planac-error-message {
+  color: var(--planac-danger);
+  font-size: 0.875rem;
+  margin-top: var(--planac-spacing-xs);
+}
+
+.planac-success-message {
+  color: var(--planac-success);
+  font-size: 0.875rem;
+  margin-top: var(--planac-spacing-xs);
+}
+
+/* Checkbox e Radio */
+.planac-checkbox,
+.planac-radio {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--planac-spacing-sm);
+  cursor: pointer;
+}
+
+.planac-checkbox input[type="checkbox"],
+.planac-radio input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin-right: var(--planac-spacing-sm);
+  cursor: pointer;
+}
+
+/* ================================================
+   7. NAVEGAÃ‡ÃƒO PLANAC
+   ================================================ */
+.planac-nav {
+  background: white;
+  box-shadow: var(--planac-shadow);
+  padding: var(--planac-spacing-md) 0;
+  position: sticky;
+  top: 0;
+  z-index: var(--planac-z-sticky);
+}
+
+.planac-nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--planac-spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.planac-nav-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--planac-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--planac-spacing-sm);
+}
+
+.planac-nav-menu {
+  display: flex;
+  list-style: none;
+  gap: var(--planac-spacing-xl);
+  margin: 0;
+  padding: 0;
+}
+
+.planac-nav-item {
+  position: relative;
+}
+
+.planac-nav-link {
+  color: var(--planac-gray-700);
+  text-decoration: none;
+  font-weight: 500;
+  padding: var(--planac-spacing-sm) 0;
+  transition: all var(--planac-transition-fast);
+  position: relative;
+}
+
+.planac-nav-link:hover {
+  color: var(--planac-primary);
+}
+
+.planac-nav-link.active {
+  color: var(--planac-primary);
+}
+
+.planac-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--planac-gradient-primary);
+  border-radius: 1px;
+}
+
+/* NavegaÃ§Ã£o Glass */
+.planac-nav-glass {
+  background: var(--planac-glass-bg);
+  backdrop-filter: blur(var(--planac-blur));
+  border-bottom: 1px solid var(--planac-glass-border);
+  box-shadow: var(--planac-shadow-md);
+}
+
+/* ================================================
+   8. TABELAS PLANAC
+   ================================================ */
+.planac-table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: var(--planac-radius-lg);
+  box-shadow: var(--planac-shadow);
+}
+
+.planac-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.planac-table thead {
+  background: var(--planac-gray-50);
+  border-bottom: 2px solid var(--planac-gray-200);
+}
+
+.planac-table th {
+  padding: var(--planac-spacing-md);
+  text-align: left;
+  font-weight: 600;
+  color: var(--planac-gray-900);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.planac-table td {
+  padding: var(--planac-spacing-md);
+  color: var(--planac-gray-700);
+  border-bottom: 1px solid var(--planac-gray-100);
+}
+
+.planac-table tbody tr:hover {
+  background: var(--planac-gray-50);
+}
+
+.planac-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Tabela Striped */
+.planac-table-striped tbody tr:nth-child(even) {
+  background: var(--planac-gray-50);
+}
+
+/* ================================================
+   9. BADGES E TAGS PLANAC
+   ================================================ */
+.planac-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--planac-spacing-xs) var(--planac-spacing-sm);
+  border-radius: var(--planac-radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.planac-badge-primary {
+  background: var(--planac-red-100);
+  color: var(--planac-primary);
+  border: 1px solid var(--planac-red-200);
+}
+
+.planac-badge-secondary {
+  background: var(--planac-gray-100);
+  color: var(--planac-gray-700);
+  border: 1px solid var(--planac-gray-200);
+}
+
+.planac-badge-success {
+  background: #d1fae5;
+  color: var(--planac-success);
+  border: 1px solid #a7f3d0;
+}
+
+.planac-badge-warning {
+  background: #fed7aa;
+  color: var(--planac-warning);
+  border: 1px solid #fdba74;
+}
+
+.planac-badge-danger {
+  background: var(--planac-red-100);
+  color: var(--planac-danger);
+  border: 1px solid var(--planac-red-200);
+}
+
+.planac-badge-info {
+  background: #dbeafe;
+  color: var(--planac-info);
+  border: 1px solid #bfdbfe;
+}
+
+/* ================================================
+   10. ALERTAS PLANAC
+   ================================================ */
+.planac-alert {
+  padding: var(--planac-spacing-md);
+  border-radius: var(--planac-radius-lg);
+  border-left: 4px solid;
+  margin-bottom: var(--planac-spacing-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--planac-spacing-sm);
+}
+
+.planac-alert-primary {
+  background: var(--planac-red-50);
+  border-color: var(--planac-primary);
+  color: var(--planac-red-800);
+}
+
+.planac-alert-success {
+  background: #f0fdf4;
+  border-color: var(--planac-success);
+  color: #14532d;
+}
+
+.planac-alert-warning {
+  background: #fffbeb;
+  border-color: var(--planac-warning);
+  color: #78350f;
+}
+
+.planac-alert-danger {
+  background: var(--planac-red-50);
+  border-color: var(--planac-danger);
+  color: var(--planac-red-800);
+}
+
+.planac-alert-info {
+  background: #eff6ff;
+  border-color: var(--planac-info);
+  color: #1e3a8a;
+}
+
+/* ================================================
+   11. MODAL PLANAC
+   ================================================ */
+.planac-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--planac-z-modal);
+  padding: var(--planac-spacing-lg);
+}
+
+.planac-modal {
+  background: white;
+  border-radius: var(--planac-radius-2xl);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--planac-shadow-2xl);
+  animation: modalSlideIn 0.3s ease;
+}
+
+.planac-modal-glass {
+  background: var(--planac-glass-bg);
+  backdrop-filter: blur(var(--planac-blur-heavy));
+  border: 1px solid var(--planac-glass-border);
+}
+
+.planac-modal-header {
+  padding: var(--planac-spacing-lg);
+  border-bottom: 1px solid var(--planac-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.planac-modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--planac-gray-900);
+}
+
+.planac-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--planac-gray-500);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--planac-radius-md);
+  transition: all var(--planac-transition-fast);
+}
+
+.planac-modal-close:hover {
+  background: var(--planac-gray-100);
+  color: var(--planac-gray-700);
+}
+
+.planac-modal-body {
+  padding: var(--planac-spacing-lg);
+}
+
+.planac-modal-footer {
+  padding: var(--planac-spacing-lg);
+  border-top: 1px solid var(--planac-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--planac-spacing-sm);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================
+   12. COMPONENTES ESPECIAIS PLANAC
+   ================================================ */
+
+/* Hero Section */
+.planac-hero {
+  background: var(--planac-gradient-primary);
+  color: white;
+  padding: var(--planac-spacing-3xl) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.planac-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC4xIi8+Cjwvc3ZnPg==');
+  opacity: 0.1;
+}
+
+.planac-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--planac-spacing-lg);
+}
+
+/* Feature Box */
+.planac-feature {
+  text-align: center;
+  padding: var(--planac-spacing-xl);
+}
+
+.planac-feature-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--planac-spacing-md);
+  background: var(--planac-gradient-primary);
+  border-radius: var(--planac-radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  box-shadow: var(--planac-shadow-red);
+}
+
+.planac-feature-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--planac-gray-900);
+  margin-bottom: var(--planac-spacing-sm);
+}
+
+.planac-feature-description {
+  color: var(--planac-gray-600);
+  line-height: 1.6;
+}
+
+/* EstatÃ­sticas */
+.planac-stat {
+  text-align: center;
+}
+
+.planac-stat-value {
+  font-size: 3rem;
+  font-weight: 800;
+  background: var(--planac-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: var(--planac-spacing-sm);
+}
+
+.planac-stat-label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--planac-gray-600);
+  font-weight: 600;
+}
+
+/* Progress Bar */
+.planac-progress {
+  height: 8px;
+  background: var(--planac-gray-200);
+  border-radius: var(--planac-radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.planac-progress-bar {
+  height: 100%;
+  background: var(--planac-gradient-primary);
+  border-radius: var(--planac-radius-full);
+  transition: width var(--planac-transition-slow);
+  position: relative;
+  overflow: hidden;
+}
+
+.planac-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ================================================
+   13. UTILIDADES PLANAC
+   ================================================ */
+
+/* Cores de Texto */
+.planac-text-primary { color: var(--planac-primary); }
+.planac-text-secondary { color: var(--planac-secondary); }
+.planac-text-success { color: var(--planac-success); }
+.planac-text-warning { color: var(--planac-warning); }
+.planac-text-danger { color: var(--planac-danger); }
+.planac-text-info { color: var(--planac-info); }
+.planac-text-white { color: white; }
+.planac-text-black { color: black; }
+
+/* Cores de Fundo */
+.planac-bg-primary { background: var(--planac-primary); }
+.planac-bg-secondary { background: var(--planac-secondary); }
+.planac-bg-success { background: var(--planac-success); }
+.planac-bg-warning { background: var(--planac-warning); }
+.planac-bg-danger { background: var(--planac-danger); }
+.planac-bg-info { background: var(--planac-info); }
+.planac-bg-white { background: white; }
+.planac-bg-black { background: black; }
+.planac-bg-gradient { background: var(--planac-gradient-primary); }
+
+/* EspaÃ§amento */
+.planac-p-0 { padding: 0; }
+.planac-p-xs { padding: var(--planac-spacing-xs); }
+.planac-p-sm { padding: var(--planac-spacing-sm); }
+.planac-p-md { padding: var(--planac-spacing-md); }
+.planac-p-lg { padding: var(--planac-spacing-lg); }
+.planac-p-xl { padding: var(--planac-spacing-xl); }
+.planac-p-2xl { padding: var(--planac-spacing-2xl); }
+
+.planac-m-0 { margin: 0; }
+.planac-m-xs { margin: var(--planac-spacing-xs); }
+.planac-m-sm { margin: var(--planac-spacing-sm); }
+.planac-m-md { margin: var(--planac-spacing-md); }
+.planac-m-lg { margin: var(--planac-spacing-lg); }
+.planac-m-xl { margin: var(--planac-spacing-xl); }
+.planac-m-2xl { margin: var(--planac-spacing-2xl); }
+
+/* Flexbox */
+.planac-flex { display: flex; }
+.planac-flex-column { flex-direction: column; }
+.planac-flex-wrap { flex-wrap: wrap; }
+.planac-justify-start { justify-content: flex-start; }
+.planac-justify-center { justify-content: center; }
+.planac-justify-end { justify-content: flex-end; }
+.planac-justify-between { justify-content: space-between; }
+.planac-justify-around { justify-content: space-around; }
+.planac-align-start { align-items: flex-start; }
+.planac-align-center { align-items: center; }
+.planac-align-end { align-items: flex-end; }
+.planac-flex-1 { flex: 1; }
+
+/* Grid */
+.planac-grid { display: grid; }
+.planac-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.planac-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.planac-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.planac-gap-xs { gap: var(--planac-spacing-xs); }
+.planac-gap-sm { gap: var(--planac-spacing-sm); }
+.planac-gap-md { gap: var(--planac-spacing-md); }
+.planac-gap-lg { gap: var(--planac-spacing-lg); }
+.planac-gap-xl { gap: var(--planac-spacing-xl); }
+
+/* Texto */
+.planac-text-center { text-align: center; }
+.planac-text-left { text-align: left; }
+.planac-text-right { text-align: right; }
+.planac-font-bold { font-weight: 700; }
+.planac-font-semibold { font-weight: 600; }
+.planac-font-medium { font-weight: 500; }
+.planac-font-normal { font-weight: 400; }
+.planac-font-light { font-weight: 300; }
+
+/* Sombras */
+.planac-shadow-sm { box-shadow: var(--planac-shadow-sm); }
+.planac-shadow { box-shadow: var(--planac-shadow); }
+.planac-shadow-md { box-shadow: var(--planac-shadow-md); }
+.planac-shadow-lg { box-shadow: var(--planac-shadow-lg); }
+.planac-shadow-xl { box-shadow: var(--planac-shadow-xl); }
+.planac-shadow-2xl { box-shadow: var(--planac-shadow-2xl); }
+.planac-shadow-red { box-shadow: var(--planac-shadow-red); }
+.planac-shadow-none { box-shadow: none; }
+
+/* Bordas */
+.planac-border { border: 1px solid var(--planac-gray-300); }
+.planac-border-top { border-top: 1px solid var(--planac-gray-300); }
+.planac-border-right { border-right: 1px solid var(--planac-gray-300); }
+.planac-border-bottom { border-bottom: 1px solid var(--planac-gray-300); }
+.planac-border-left { border-left: 1px solid var(--planac-gray-300); }
+.planac-border-none { border: none; }
+.planac-rounded-sm { border-radius: var(--planac-radius-sm); }
+.planac-rounded { border-radius: var(--planac-radius-md); }
+.planac-rounded-lg { border-radius: var(--planac-radius-lg); }
+.planac-rounded-xl { border-radius: var(--planac-radius-xl); }
+.planac-rounded-2xl { border-radius: var(--planac-radius-2xl); }
+.planac-rounded-full { border-radius: var(--planac-radius-full); }
+
+/* Display */
+.planac-d-none { display: none; }
+.planac-d-block { display: block; }
+.planac-d-inline { display: inline; }
+.planac-d-inline-block { display: inline-block; }
+.planac-d-flex { display: flex; }
+.planac-d-grid { display: grid; }
+
+/* PosiÃ§Ã£o */
+.planac-relative { position: relative; }
+.planac-absolute { position: absolute; }
+.planac-fixed { position: fixed; }
+.planac-sticky { position: sticky; }
+
+/* Overflow */
+.planac-overflow-hidden { overflow: hidden; }
+.planac-overflow-auto { overflow: auto; }
+.planac-overflow-scroll { overflow: scroll; }
+
+/* Width e Height */
+.planac-w-full { width: 100%; }
+.planac-h-full { height: 100%; }
+.planac-w-auto { width: auto; }
+.planac-h-auto { height: auto; }
+
+/* ================================================
+   14. ANIMAÃ‡Ã•ES PLANAC
+   ================================================ */
+.planac-fade-in {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.planac-slide-up {
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.planac-slide-down {
+  animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.planac-scale-in {
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.planac-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.planac-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ================================================
+   15. RESPONSIVIDADE PLANAC
+   ================================================ */
+@media (max-width: 1200px) {
+  .planac-container {
+    max-width: 992px;
+  }
+}
+
+@media (max-width: 992px) {
+  .planac-container {
+    max-width: 768px;
+  }
+  
+  .planac-grid-lg-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .planac-grid-lg-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .planac-container {
+    max-width: 100%;
+    padding: 0 var(--planac-spacing-md);
+  }
+  
+  .planac-grid-md-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  .planac-nav-menu {
+    display: none;
+  }
+  
+  .planac-h1 {
+    font-size: 2rem;
+  }
+  
+  .planac-h2 {
+    font-size: 1.75rem;
+  }
+  
+  .planac-h3 {
+    font-size: 1.5rem;
+  }
+  
+  .planac-modal {
+    margin: var(--planac-spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .planac-grid-sm-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  .planac-btn {
+    width: 100%;
+  }
+  
+  .planac-text-sm-center {
+    text-align: center;
+  }
+}
+
+/* ================================================
+   16. MODO ESCURO PLANAC (Opcional)
+   ================================================ */
+@media (prefers-color-scheme: dark) {
+  .planac-dark-mode {
+    --planac-gray-50: #171717;
+    --planac-gray-100: #262626;
+    --planac-gray-200: #404040;
+    --planac-gray-300: #525252;
+    --planac-gray-400: #737373;
+    --planac-gray-500: #a3a3a3;
+    --planac-gray-600: #d4d4d4;
+    --planac-gray-700: #e5e5e5;
+    --planac-gray-800: #f5f5f5;
+    --planac-gray-900: #fafafa;
+    
+    background: var(--planac-gray-50);
+    color: var(--planac-gray-800);
+  }
+  
+  .planac-dark-mode .planac-card {
+    background: var(--planac-gray-100);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .planac-dark-mode .planac-input,
+  .planac-dark-mode .planac-textarea,
+  .planac-dark-mode .planac-select {
+    background: var(--planac-gray-200);
+    border-color: var(--planac-gray-300);
+    color: var(--planac-gray-800);
+  }
+}
+
+/* ================================================
+   FIM DO TEMA PLANAC
+   ================================================ */

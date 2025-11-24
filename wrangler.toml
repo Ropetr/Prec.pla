@@ -9,12 +9,6 @@ binding = "DB"
 database_name = "Precificacao-Sistema"
 database_id = "3843b4b1-8bf8-4b01-8b5d-24bc26669ecf"
 
-# KV Namespace para cache
-[[kv_namespaces]]
-binding = "CACHE"
-id = "seu-kv-namespace-id"
-preview_id = "seu-kv-namespace-preview-id"
-
 # Variáveis de ambiente
 [vars]
 IMAP_HOST = "imap.hostinger.com"
@@ -24,27 +18,6 @@ SMTP_PORT = "465"
 SCAN_INTERVAL_MINUTES = "10"
 DAYS_TO_SEARCH = "7"
 
-# Secrets (adicionar via dashboard ou wrangler secret)
-# EMAIL_PASSWORD = "Rodelo122509."
-
 # Agendamento - executar a cada 10 minutos
 [triggers]
 crons = ["*/10 * * * *"]
-
-# Rota para a aplicação (comentado - usar URL do Cloudflare por enquanto)
-# [routes]
-# routes = ["scanner.planac.com.br/*"]
-
-# Configurações de build
-[build]
-command = ""
-watch_paths = ["worker.js", "index.html", "scanner.html"]
-
-# Configurações de desenvolvimento
-[dev]
-port = 8787
-local_protocol = "http"
-
-# Limites de uso
-[usage_limits]
-cpu_ms = 50

@@ -469,9 +469,3 @@ export default {
     return new Response('Method not allowed', { status: 405, headers });
   }
 };
-
-// Scheduled trigger configuration (wrangler.toml):
-/*
-[triggers]
-crons = ["*/10 * * * *"] # Run every 10 minutes
-*/

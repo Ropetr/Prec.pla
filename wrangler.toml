@@ -1,5 +1,5 @@
 name = "precplanac"
-main = "email-scanner-worker.js"
+main = "worker.js"
 compatibility_date = "2024-01-01"
 node_compat = true
 
@@ -31,14 +31,14 @@ DAYS_TO_SEARCH = "7"
 [triggers]
 crons = ["*/10 * * * *"]
 
-# Rota para a aplicação
-[routes]
-routes = ["scanner.planac.com.br/*"]
+# Rota para a aplicação (comentado - usar URL do Cloudflare por enquanto)
+# [routes]
+# routes = ["scanner.planac.com.br/*"]
 
 # Configurações de build
 [build]
 command = ""
-watch_paths = ["email-scanner-worker.js"]
+watch_paths = ["worker.js", "index.html", "scanner.html"]
 
 # Configurações de desenvolvimento
 [dev]

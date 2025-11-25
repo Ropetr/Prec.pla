@@ -2126,15 +2126,6 @@ ST: R$ ${pricing.calculation.st}`;
             }
         }
 
-        // Update tab switching to load invoices
-        const originalSwitchTab = switchTab;
-        function switchTab(tabName) {
-            originalSwitchTab(tabName);
-            if (tabName === 'scanner') {
-                loadRecentInvoices();
-            }
-        }
-
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             // Focus on email field

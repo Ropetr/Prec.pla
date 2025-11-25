@@ -1169,7 +1169,7 @@
             password: 'Rodelo122509.'
         };
 
-        // Login Handler
+        // Login Handler (OPTIMIZED - Show UI immediately, load data in background)
         async function handleLogin(event) {
             event.preventDefault();
             const email = document.getElementById('loginEmail').value;
@@ -1179,12 +1179,15 @@
                 const result = await api.login(email, password);
                 currentUser = result.user.name;
                 document.getElementById('userName').textContent = currentUser;
+
+                // OPTIMIZATION: Show interface immediately
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('appScreen').classList.add('active');
 
-                // Load initial data
-                await loadDashboard();
-                await loadAllProducts();
+                // OPTIMIZATION: Load data in background (non-blocking)
+                // This allows user to see dashboard instantly while data loads
+                loadAllProducts(); // Parallel load
+                loadDashboard();   // Parallel load
             } catch (error) {
                 alert('❌ Erro no login: ' + error.message);
             }
@@ -1561,61 +1564,87 @@
                     products = await api.getProducts();
                 }
 
-                // Calculate profitability for all products
-                const profitData = await calculateProfitabilityData();
+                // Show loading state immediately
+                document.getElementById('totalProducts').textContent = products.length;
+                document.getElementById('highProfitCount').innerHTML = '<span class="loading"></span>';
+                document.getElementById('mediumProfitCount').innerHTML = '<span class="loading"></span>';
+                document.getElementById('lowProfitCount').innerHTML = '<span class="loading"></span>';
 
-                // Update summary cards
-                document.getElementById('totalProducts').textContent = profitData.total;
-                document.getElementById('highProfitCount').textContent = profitData.highProfit;
-                document.getElementById('mediumProfitCount').textContent = profitData.mediumProfit;
-                document.getElementById('lowProfitCount').textContent = profitData.lowProfit;
+                // Load groups report immediately (doesn't depend on pricing calculations)
+                loadGroupsProfitReport(); // Non-blocking
 
-                // Load groups profit report
-                await loadGroupsProfitReport();
+                // Calculate profitability in background (non-blocking for initial load)
+                calculateProfitabilityData().then(profitData => {
+                    // Update summary cards
+                    document.getElementById('highProfitCount').textContent = profitData.highProfit;
+                    document.getElementById('mediumProfitCount').textContent = profitData.mediumProfit;
+                    document.getElementById('lowProfitCount').textContent = profitData.lowProfit;
 
-                // Load products requiring attention
-                displayProductsRequiringAttention(profitData.lowProfitProducts);
+                    // Load products requiring attention
+                    displayProductsRequiringAttention(profitData.lowProfitProducts);
 
-                // Load top profitable products
-                displayTopProfitableProducts(profitData.highProfitProducts);
+                    // Load top profitable products
+                    displayTopProfitableProducts(profitData.highProfitProducts);
+                });
 
             } catch (error) {
                 console.error('Erro ao carregar dashboard:', error);
             }
         }
 
-        // Calculate profitability data for all products
+        // Calculate profitability data for all products (OPTIMIZED - Parallel API calls)
         async function calculateProfitabilityData() {
             const highProfitProducts = [];
             const mediumProfitProducts = [];
             const lowProfitProducts = [];
 
-            for (const product of products) {
-                try {
-                    // Calculate with 30% margin
-                    const pricing = await api.calculatePricing(product.code, '5102', 'SP', 'consumidor', 30);
+            // OPTIMIZATION: Process in batches of 10 parallel requests
+            const batchSize = 10;
+            const batches = [];
 
-                    const cost = parseFloat(pricing.calculation.cost);
-                    const finalPrice = parseFloat(pricing.calculation.finalPrice);
-                    const profitMargin = ((finalPrice - cost) / finalPrice) * 100;
+            for (let i = 0; i < products.length; i += batchSize) {
+                batches.push(products.slice(i, i + batchSize));
+            }
 
-                    const productData = {
-                        ...product,
-                        cost,
-                        finalPrice,
-                        profitMargin: profitMargin.toFixed(2)
-                    };
+            for (const batch of batches) {
+                // Execute all pricing calculations in this batch in parallel
+                const promises = batch.map(async (product) => {
+                    try {
+                        // Calculate with 30% margin
+                        const pricing = await api.calculatePricing(product.code, '5102', 'SP', 'consumidor', 30);
 
-                    if (profitMargin > 35) {
+                        const cost = parseFloat(pricing.calculation.cost);
+                        const finalPrice = parseFloat(pricing.calculation.finalPrice);
+                        const profitMargin = ((finalPrice - cost) / finalPrice) * 100;
+
+                        return {
+                            ...product,
+                            cost,
+                            finalPrice,
+                            profitMargin: profitMargin.toFixed(2),
+                            marginValue: profitMargin
+                        };
+                    } catch (error) {
+                        console.error(`Erro ao calcular ${product.code}:`, error);
+                        return null;
+                    }
+                });
+
+                // Wait for all products in this batch to complete
+                const results = await Promise.all(promises);
+
+                // Categorize products
+                results.forEach(productData => {
+                    if (!productData) return;
+
+                    if (productData.marginValue > 35) {
                         highProfitProducts.push(productData);
-                    } else if (profitMargin >= 25) {
+                    } else if (productData.marginValue >= 25) {
                         mediumProfitProducts.push(productData);
                     } else {
                         lowProfitProducts.push(productData);
                     }
-                } catch (error) {
-                    console.error(`Erro ao calcular ${product.code}:`, error);
-                }
+                });
             }
 
             // Sort by margin

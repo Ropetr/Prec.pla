@@ -807,28 +807,28 @@
         <nav class="nav">
             <div class="nav-content">
                 <div class="nav-tabs">
-                    <button class="nav-tab active" onclick="switchTab('dashboard')">
+                    <button class="nav-tab active" data-tab="dashboard" onclick="switchTab('dashboard')">
                         📊 Dashboard
                     </button>
-                    <button class="nav-tab" onclick="switchTab('pricing')">
+                    <button class="nav-tab" data-tab="pricing" onclick="switchTab('pricing')">
                         💰 Precificação
                     </button>
-                    <button class="nav-tab" onclick="switchTab('products')">
+                    <button class="nav-tab" data-tab="products" onclick="switchTab('products')">
                         📦 Produtos
                     </button>
-                    <button class="nav-tab" onclick="switchTab('groups')">
+                    <button class="nav-tab" data-tab="groups" onclick="switchTab('groups')">
                         📋 Grupos & Tags
                     </button>
-                    <button class="nav-tab" onclick="switchTab('reports')">
+                    <button class="nav-tab" data-tab="reports" onclick="switchTab('reports')">
                         📈 Relatórios
                     </button>
-                    <button class="nav-tab" onclick="switchTab('invoices')">
+                    <button class="nav-tab" data-tab="invoices" onclick="switchTab('invoices')">
                         📄 Notas Fiscais
                     </button>
-                    <button class="nav-tab" onclick="switchTab('scanner')">
+                    <button class="nav-tab" data-tab="scanner" onclick="switchTab('scanner')">
                         📧 Scanner Emails
                     </button>
-                    <button class="nav-tab" onclick="switchTab('settings')">
+                    <button class="nav-tab" data-tab="settings" onclick="switchTab('settings')">
                         ⚙️ Configurações
                     </button>
                 </div>
@@ -1204,24 +1204,30 @@
 
         // Tab Switching
         function switchTab(tabName) {
+            console.log('Switching to tab:', tabName); // Debug log
+
             // Update nav tabs
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
 
-            // Find and activate the clicked tab
-            const clickedTab = Array.from(document.querySelectorAll('.nav-tab')).find(tab =>
-                tab.getAttribute('onclick').includes(`'${tabName}'`)
-            );
-            if (clickedTab) {
-                clickedTab.classList.add('active');
-            }
+            // Find and activate the clicked tab by dataset
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                const tabDataName = tab.getAttribute('data-tab');
+                if (tabDataName === tabName) {
+                    tab.classList.add('active');
+                }
+            });
 
             // Update content
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            document.getElementById(tabName).classList.add('active');
+
+            const targetContent = document.getElementById(tabName);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
 
             // Load tab data if needed
             if (tabName === 'products') {

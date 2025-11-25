@@ -415,6 +415,74 @@
             box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
         }
 
+        /* Autocomplete Dropdown */
+        .autocomplete-container {
+            position: relative;
+            flex: 1;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
+            border: 2px solid var(--planac-primary);
+            border-top: none;
+            border-radius: 0 0 var(--planac-radius-lg) var(--planac-radius-lg);
+            box-shadow: var(--planac-shadow-xl);
+            z-index: 1000;
+            display: none;
+        }
+
+        .autocomplete-dropdown.active {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: var(--planac-spacing-md);
+            cursor: pointer;
+            border-bottom: 1px solid var(--planac-gray-200);
+            transition: all var(--planac-transition-fast);
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.selected {
+            background: var(--planac-red-50);
+        }
+
+        .autocomplete-item-title {
+            font-weight: 600;
+            color: var(--planac-gray-800);
+            margin-bottom: var(--planac-spacing-xs);
+        }
+
+        .autocomplete-item-meta {
+            font-size: 0.85rem;
+            color: var(--planac-gray-600);
+            display: flex;
+            gap: var(--planac-spacing-md);
+        }
+
+        .autocomplete-highlight {
+            background: var(--planac-warning);
+            color: var(--planac-gray-900);
+            font-weight: 600;
+            padding: 0 2px;
+        }
+
+        .autocomplete-no-results {
+            padding: var(--planac-spacing-lg);
+            text-align: center;
+            color: var(--planac-gray-500);
+        }
+
         .btn-search {
             padding: var(--planac-spacing-md) var(--planac-spacing-xl);
             background: var(--planac-gradient-primary);
@@ -836,7 +904,10 @@
                     </div>
 
                     <div class="search-section">
-                        <input type="text" class="search-input" id="searchInput" placeholder="Buscar por código, NCM ou nome do produto...">
+                        <div class="autocomplete-container">
+                            <input type="text" class="search-input" id="searchInput" placeholder="Buscar por código, NCM ou nome do produto..." autocomplete="off">
+                            <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+                        </div>
                         <button class="btn-search" onclick="searchProduct()">
                             🔍 Buscar
                         </button>
@@ -1314,21 +1385,164 @@
             resultsDiv.innerHTML = html;
         }
 
-        // Auto-search as user types
+        // Autocomplete/Autosuggest System
         let searchTimeout;
+        let selectedSuggestionIndex = -1;
+        let currentSuggestions = [];
+
+        // Initialize autocomplete
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', () => {
+            const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+
+            if (searchInput && autocompleteDropdown) {
+                // Input event - show autocomplete suggestions
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.trim();
                     clearTimeout(searchTimeout);
+
+                    if (query.length === 0) {
+                        hideAutocomplete();
+                        return;
+                    }
+
                     searchTimeout = setTimeout(() => {
+                        showAutocompleteSuggestions(query);
+                        // Also trigger incremental search/filter
                         if (currentMode && products.length > 0) {
                             searchProduct();
                         }
                     }, 300); // 300ms debounce
                 });
+
+                // Keyboard navigation
+                searchInput.addEventListener('keydown', (e) => {
+                    const dropdown = document.getElementById('autocompleteDropdown');
+                    if (!dropdown.classList.contains('active')) return;
+
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, currentSuggestions.length - 1);
+                        updateSelectedSuggestion();
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, 0);
+                        updateSelectedSuggestion();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (selectedSuggestionIndex >= 0 && currentSuggestions[selectedSuggestionIndex]) {
+                            selectSuggestion(currentSuggestions[selectedSuggestionIndex]);
+                        } else {
+                            searchProduct();
+                        }
+                    } else if (e.key === 'Escape') {
+                        hideAutocomplete();
+                    }
+                });
+
+                // Click outside to close
+                document.addEventListener('click', (e) => {
+                    if (!searchInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
+                        hideAutocomplete();
+                    }
+                });
             }
         });
+
+        // Show autocomplete suggestions
+        function showAutocompleteSuggestions(query) {
+            if (products.length === 0) return;
+
+            const dropdown = document.getElementById('autocompleteDropdown');
+            const searchLower = query.toLowerCase();
+
+            // Filter products matching query
+            const matches = products.filter(product => {
+                return product.name.toLowerCase().includes(searchLower) ||
+                       product.code.toLowerCase().includes(searchLower) ||
+                       product.ncm.toLowerCase().includes(searchLower);
+            }).slice(0, 8); // Limit to 8 suggestions
+
+            currentSuggestions = matches;
+            selectedSuggestionIndex = -1;
+
+            if (matches.length === 0) {
+                dropdown.innerHTML = '<div class="autocomplete-no-results">Nenhum produto encontrado</div>';
+                dropdown.classList.add('active');
+                return;
+            }
+
+            let html = '';
+            matches.forEach((product, index) => {
+                const highlightedName = highlightMatch(product.name, query);
+                const highlightedCode = highlightMatch(product.code, query);
+                const highlightedNCM = highlightMatch(product.ncm, query);
+
+                html += `
+                    <div class="autocomplete-item" data-index="${index}" onclick="selectSuggestionByIndex(${index})">
+                        <div class="autocomplete-item-title">${highlightedName}</div>
+                        <div class="autocomplete-item-meta">
+                            <span>Código: ${highlightedCode}</span>
+                            <span>NCM: ${highlightedNCM}</span>
+                            <span>R$ ${parseFloat(product.cost || 0).toFixed(2)}</span>
+                            <span class="st-badge ${product.hasST ? 'with-st' : 'no-st'}">${product.hasST ? 'COM ST' : 'SEM ST'}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            dropdown.innerHTML = html;
+            dropdown.classList.add('active');
+        }
+
+        // Highlight matching text
+        function highlightMatch(text, query) {
+            if (!text || !query) return text;
+            const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+            return text.replace(regex, '<span class="autocomplete-highlight">$1</span>');
+        }
+
+        // Escape regex special characters
+        function escapeRegex(text) {
+            return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        }
+
+        // Update selected suggestion visual state
+        function updateSelectedSuggestion() {
+            const items = document.querySelectorAll('.autocomplete-item');
+            items.forEach((item, index) => {
+                if (index === selectedSuggestionIndex) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        // Select suggestion by index
+        function selectSuggestionByIndex(index) {
+            selectedSuggestionIndex = index;
+            selectSuggestion(currentSuggestions[index]);
+        }
+
+        // Select a suggestion
+        function selectSuggestion(product) {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = product.code; // Fill with product code
+            hideAutocomplete();
+
+            // Trigger search with selected product
+            searchProduct();
+        }
+
+        // Hide autocomplete dropdown
+        function hideAutocomplete() {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            dropdown.classList.remove('active');
+            selectedSuggestionIndex = -1;
+            currentSuggestions = [];
+        }
 
         // Load Dashboard with Profitability Data
         async function loadDashboard() {

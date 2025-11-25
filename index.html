@@ -1205,7 +1205,14 @@
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
+
+            // Find and activate the clicked tab
+            const clickedTab = Array.from(document.querySelectorAll('.nav-tab')).find(tab =>
+                tab.getAttribute('onclick').includes(`'${tabName}'`)
+            );
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
 
             // Update content
             document.querySelectorAll('.tab-content').forEach(content => {
@@ -1220,6 +1227,8 @@
                 loadGroupsAndTags();
             } else if (tabName === 'reports') {
                 loadReports();
+            } else if (tabName === 'scanner') {
+                loadRecentInvoices();
             }
         }
 

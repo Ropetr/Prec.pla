@@ -13,8 +13,9 @@ export default {
       const recipient = message.to.toLowerCase();
       let type = 'entrada'; // default
 
-      if (recipient.includes('nfe-compra') || recipient.includes('financeiro') ||
-          recipient.includes('marco') || recipient.includes('rodrigo')) {
+      if (recipient.includes('nfe-compra') || recipient.includes('compras@') ||
+          recipient.includes('financeiro') || recipient.includes('marco') ||
+          recipient.includes('rodrigo')) {
         type = 'entrada';
       } else if (recipient.includes('nfe-venda') || recipient.includes('planacnotaseboletos')) {
         type = 'saida';

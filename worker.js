@@ -2,6 +2,96 @@
 // PLANAC - Sistema de Precificação
 
 export default {
+  // ============================================
+  // EMAIL HANDLER - Cloudflare Email Routing
+  // ============================================
+  async email(message, env, ctx) {
+    console.log('📧 Email recebido:', message.from, message.to);
+
+    try {
+      // Get email type based on recipient
+      const recipient = message.to.toLowerCase();
+      let type = 'entrada'; // default
+
+      if (recipient.includes('nfe-compra') || recipient.includes('financeiro') ||
+          recipient.includes('marco') || recipient.includes('rodrigo')) {
+        type = 'entrada';
+      } else if (recipient.includes('nfe-venda') || recipient.includes('planacnotaseboletos')) {
+        type = 'saida';
+      }
+
+      console.log(`📋 Tipo de nota identificado: ${type}`);
+
+      // Process all XML attachments
+      let processedCount = 0;
+      const errors = [];
+
+      for (const attachment of message.attachments) {
+        const filename = attachment.filename.toLowerCase();
+
+        if (filename.endsWith('.xml')) {
+          try {
+            console.log(`📄 Processando XML: ${attachment.filename}`);
+
+            // Read attachment content
+            const reader = attachment.body.getReader();
+            const chunks = [];
+            let done, value;
+
+            while ({done, value} = await reader.read(), !done) {
+              chunks.push(value);
+            }
+
+            // Convert to text
+            const xmlContent = new TextDecoder().decode(
+              new Uint8Array(chunks.reduce((acc, chunk) => [...acc, ...chunk], []))
+            );
+
+            // Parse and save
+            const nfeData = await this.parseNFeXML(xmlContent);
+            const invoiceId = await this.saveInvoice(nfeData, type, env);
+
+            processedCount++;
+            console.log(`✅ XML processado com sucesso: ${invoiceId}`);
+
+            // Register in history
+            await this.registerEmailProcessing(env, {
+              email_from: message.from,
+              email_to: message.to,
+              invoice_number: nfeData.nNF,
+              invoice_id: invoiceId,
+              type: type,
+              status: 'success'
+            });
+
+          } catch (error) {
+            console.error(`❌ Erro ao processar ${attachment.filename}:`, error);
+            errors.push({ file: attachment.filename, error: error.message });
+
+            // Register error
+            await this.registerEmailProcessing(env, {
+              email_from: message.from,
+              email_to: message.to,
+              type: type,
+              status: 'error',
+              error_message: error.message
+            });
+          }
+        }
+      }
+
+      console.log(`✨ Processamento concluído: ${processedCount} XMLs processados, ${errors.length} erros`);
+
+      // Optional: Send confirmation email back
+      if (processedCount > 0) {
+        await this.sendConfirmationEmail(env, message.from, processedCount, errors);
+      }
+
+    } catch (error) {
+      console.error('❌ Erro geral no processamento de email:', error);
+    }
+  },
+
   async scheduled(event, env, ctx) {
     // Executado periodicamente pelo Cloudflare Cron
     await this.scanAllEmails(env);
@@ -925,5 +1015,77 @@ export default {
     const result = await stmt.all();
 
     return new Response(JSON.stringify(result.results || []), { headers });
+  },
+
+  // ============================================
+  // EMAIL ROUTING AUXILIARY FUNCTIONS
+  // ============================================
+
+  // Register email processing in database
+  async registerEmailProcessing(env, data) {
+    try {
+      // Create table if not exists
+      await env.DB.prepare(`
+        CREATE TABLE IF NOT EXISTS email_processing_log (
+          id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+          email_from TEXT,
+          email_to TEXT,
+          invoice_number TEXT,
+          invoice_id TEXT,
+          type TEXT,
+          status TEXT,
+          error_message TEXT,
+          processed_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+      `).run();
+
+      // Insert log
+      await env.DB.prepare(`
+        INSERT INTO email_processing_log (
+          email_from, email_to, invoice_number, invoice_id,
+          type, status, error_message
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        data.email_from,
+        data.email_to,
+        data.invoice_number || null,
+        data.invoice_id || null,
+        data.type,
+        data.status,
+        data.error_message || null
+      ).run();
+
+      console.log('✅ Log de processamento registrado');
+    } catch (error) {
+      console.error('❌ Erro ao registrar log:', error);
+    }
+  },
+
+  // Send confirmation email (optional)
+  async sendConfirmationEmail(env, recipientEmail, processedCount, errors) {
+    // This is a placeholder - you can implement actual email sending
+    // using Cloudflare's Email Workers or external services like SendGrid
+
+    const message = {
+      from: 'noreply@planacdistribuidora.com.br',
+      to: recipientEmail,
+      subject: `PLANAC - ${processedCount} nota(s) fiscal(is) processada(s)`,
+      text: `
+🎉 Processamento de Notas Fiscais Concluído
+
+✅ ${processedCount} XML(s) processado(s) com sucesso
+${errors.length > 0 ? `⚠️ ${errors.length} erro(s) encontrado(s)` : ''}
+
+${errors.length > 0 ? '\n❌ Erros:\n' + errors.map(e => `- ${e.file}: ${e.error}`).join('\n') : ''}
+
+Este é um email automático do Sistema PLANAC.
+      `.trim()
+    };
+
+    console.log('📧 Email de confirmação preparado:', message);
+
+    // TODO: Implement actual email sending
+    // For now, just log it
+    return message;
   }
 };
